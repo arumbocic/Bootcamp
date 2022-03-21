@@ -1,0 +1,7 @@
+C:\Users\arumb\source\repos\CorporationEmployees\CorporationEmployees\obj\Debug\CorporationEmployees.csproj.AssemblyReference.cache
+C:\Users\arumb\source\repos\CorporationEmployees\CorporationEmployees\obj\Debug\CorporationEmployees.csproj.CoreCompileInputs.cache
+C:\Users\arumb\source\repos\CorporationEmployees\CorporationEmployees\bin\Debug\CorporationEmployees.exe.config
+C:\Users\arumb\source\repos\CorporationEmployees\CorporationEmployees\bin\Debug\CorporationEmployees.exe
+C:\Users\arumb\source\repos\CorporationEmployees\CorporationEmployees\bin\Debug\CorporationEmployees.pdb
+C:\Users\arumb\source\repos\CorporationEmployees\CorporationEmployees\obj\Debug\CorporationEmployees.exe
+C:\Users\arumb\source\repos\CorporationEmployees\CorporationEmployees\obj\Debug\CorporationEmployees.pdb
