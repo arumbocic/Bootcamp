@@ -82,4 +82,3 @@ C:\Users\arumb\source\Bootcamp\WebApplication_WebApi\WebApplication_WebApi\bin\M
 C:\Users\arumb\source\Bootcamp\WebApplication_WebApi\WebApplication_WebApi\obj\Debug\WebApplication_WebApi.csproj.CopyComplete
 C:\Users\arumb\source\Bootcamp\WebApplication_WebApi\WebApplication_WebApi\obj\Debug\WebApplication_WebApi.dll
 C:\Users\arumb\source\Bootcamp\WebApplication_WebApi\WebApplication_WebApi\obj\Debug\WebApplication_WebApi.pdb
-C:\Users\arumb\source\Bootcamp\WebApplication_WebApi\WebApplication_WebApi\obj\Debug\WebApplication_WebApi.csproj.AssemblyReference.cache
