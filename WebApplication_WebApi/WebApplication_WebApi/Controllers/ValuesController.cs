@@ -109,11 +109,11 @@ namespace WebApplication_WebApi.Controllers
             Brand = brand;
         }
 
-        //public Machine(Guid id, string type, string brand)
-        //{
-        //    Id = id;
-        //    Type = type;
-        //    Brand = brand;
-        //}
+        public Machine(Guid id, string type, string brand)
+        {
+            Id = id;
+            Type = type;
+            Brand = brand;
+        }
     }
 }
