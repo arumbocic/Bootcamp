@@ -11,9 +11,9 @@ namespace WebApplication_WebApi.Controllers
     {
         static List<Machine> machines = new List<Machine>()
         {
-            new Machine (Guid.NewGuid(), "tractor", "John Deere"),
-            new Machine (Guid.NewGuid(), "tractor", "CaseIH"),
-            new Machine (Guid.NewGuid(), "combine", "Deutz Fahr")
+            new Machine ("tractor", "John Deere"),
+            new Machine ("tractor", "CaseIH"),
+            new Machine ("tractor", "New Holland")
         };
 
         // GET api/values
@@ -23,11 +23,9 @@ namespace WebApplication_WebApi.Controllers
         {
             if (machines == null || machines.Count == 0)
             {
-                HttpResponseMessage responseMessageBad = Request.CreateResponse(HttpStatusCode.NotFound, "The list is empty!");
-                return responseMessageBad;
+                return Request.CreateResponse(HttpStatusCode.NotFound, "The list is empty!");
             }
-            HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.OK, machines);
-            return responseMessageOk;
+            return Request.CreateResponse(HttpStatusCode.OK, machines);
         }
 
         // GET api/values/5
@@ -39,11 +37,9 @@ namespace WebApplication_WebApi.Controllers
 
             if (response == null)
             {
-                HttpResponseMessage responseMessageBad = Request.CreateResponse(HttpStatusCode.NotFound, $"There is no element with id {id}!");
-                return responseMessageBad;
+                return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no element with id {id}!");
             }
-            HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.OK, response);
-            return responseMessageOk;
+            return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 
         // POST api/values
@@ -51,18 +47,12 @@ namespace WebApplication_WebApi.Controllers
         [Route("set")]
         public HttpResponseMessage Post(Machine machine)
         {
-            //if (machines.Count > 0)
-            //{
-            //    machine.Id = machines.Max(x => x.Id) + 1;
-            //}
-            //else
-            //{
-            //    machine.Id = 1;
-            //}
-            
+            if (machine == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Provided an empty object!");
+            }
             machines.Add(machine);
-            HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.Created, machines);
-            return responseMessageOk;
+            return Request.CreateResponse(HttpStatusCode.Created, machines);
         }
 
         // PUT api/values/5
@@ -78,11 +68,9 @@ namespace WebApplication_WebApi.Controllers
 
             if (item == null)
             {
-                HttpResponseMessage responseMessageBad = Request.CreateResponse(HttpStatusCode.NotFound, $"There is no element with id {id}!");
-                return responseMessageBad;
+                return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no element with id {id}!");
             }
-            HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.OK, machines);
-            return responseMessageOk;
+            return Request.CreateResponse(HttpStatusCode.OK, machines);
         }
 
         // DELETE api/values/5
@@ -90,17 +78,21 @@ namespace WebApplication_WebApi.Controllers
         [Route("delete/{id}")]
         public HttpResponseMessage DeleteById(Guid id)
         {
-            var item = machines.Find(r => r.Id == id);
 
+            if (id == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Provided an non existing id!");
+            }
+
+            var item = machines.Find(r => r.Id == id);
             machines.Remove(item);
 
             if (item == null)
             {
-                HttpResponseMessage responseMessageBad = Request.CreateResponse(HttpStatusCode.NotFound, $"There is no element with id {id}!");
-                return responseMessageBad;
+                return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no element with id {id}!");
             }
-            HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.OK, machines);
-            return responseMessageOk;
+            return Request.CreateResponse(HttpStatusCode.OK, machines);
+
         }
     }
 
@@ -110,11 +102,18 @@ namespace WebApplication_WebApi.Controllers
         public string Type { get; set; }
         public string Brand { get; set; }
 
-        public Machine(Guid id, string type, string brand)
+        public Machine(string type, string brand)
         {
-            Id = id;
+            Id = Guid.NewGuid();
             Type = type;
             Brand = brand;
         }
+
+        //public Machine(Guid id, string type, string brand)
+        //{
+        //    Id = id;
+        //    Type = type;
+        //    Brand = brand;
+        //}
     }
 }
