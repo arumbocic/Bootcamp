@@ -166,4 +166,3 @@ C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\System.Web.We
 C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\Antlr3.Runtime.pdb
 C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\obj\Debug\TractorShopWebApi.csproj.CopyComplete
-C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\obj\Debug\TractorShopWebApi.csproj.AssemblyReference.cache

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data;
+using System.Data.SqlClient;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -10,87 +11,196 @@ namespace TractorShopWebApi.Controllers
 {
     public class CustomerController : ApiController
     {
-        //// GET api/values
-        //[HttpGet]
-        //[Route("customer/getall")]
-        //public HttpResponseMessage GetAll()
-        //{
-        //    if (customers == null || customers.Count == 0)
-        //    {
-        //        return Request.CreateResponse(HttpStatusCode.NotFound, "The list is empty!");
-        //    }
-        //    return Request.CreateResponse(HttpStatusCode.OK, customers);
-        //}
+        static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TractorShopDB;Integrated Security=True";
 
-        //// GET api/values/2
-        //[HttpGet]
-        //[Route("customer/get/{id}")]
-        //public HttpResponseMessage GetById(Guid id)
-        //{
-        //    var response = customers.Find(r => r.Id == id);
+        // GET api/values
+        [HttpGet]
+        [Route("customer/getall")]
+        public HttpResponseMessage GetAll()
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
 
-        //    if (response == null)
-        //    {
-        //        return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no element with id {id}!");
-        //    }
-        //    return Request.CreateResponse(HttpStatusCode.OK, response);
-        //}
+            using (connection)
+            {
+                SqlCommand command = new SqlCommand("SELECT * FROM Customer;", connection);
 
-        //// POST api/values
-        //[HttpPost]
-        //[Route("customer/set")]
-        //public HttpResponseMessage Post(Customer customer)
-        //{
-        //    if (customer == null)
-        //    {
-        //        return Request.CreateResponse(HttpStatusCode.BadRequest, "Provided an empty object!");
-        //    }
-        //    customers.Add(customer);
-        //    return Request.CreateResponse(HttpStatusCode.Created, customers);
-        //}
+                connection.Open();
+
+                SqlDataReader reader = command.ExecuteReader();
+                List<Customer> customers = new List<Customer>();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        Customer customer = new Customer();
+
+                        customer.Id = reader.GetGuid(0);
+                        customer.FirstName = reader.GetString(1);
+                        customer.LastName = reader.GetString(2);
+                        customer.Address = reader.GetString(3);
+
+                        customers.Add(customer);
+                    }
+
+                    reader.Close();
+                    connection.Close();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, customers);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "The list is empty!");
+                }
+            }
+        }
+
+        // GET api/values/2
+        [HttpGet]
+        [Route("customer/get/{id}")]
+        public HttpResponseMessage GetById(Guid Id)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            using (connection)
+            {
+                SqlCommand command = new SqlCommand($"SELECT * FROM Customer WHERE Id = '{Id}';", connection);
+
+                connection.Open();
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                //TODO: check why this works, and didn't work with : if(reader.HasRows)
+                //Does this reader.Read() "selects" first row, and that's why this works?
+                if (reader.Read())
+                {
+                    Customer customer = new Customer();
+
+                    customer.Id = reader.GetGuid(0);
+                    customer.FirstName = reader.GetString(1);
+                    customer.LastName = reader.GetString(2);
+                    customer.Address = reader.GetString(3);
+
+                    reader.Close();
+                    connection.Close();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, customer);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "There is no Customer with that id.");
+                }
+            }
+        }
+
+        // POST api/values
+        [HttpPost]
+        [Route("customer/set")]
+        public HttpResponseMessage Post(Customer postCustomer)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            using (connection)
+            {
+                if (postCustomer != null)
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter();
+                    string sqlQuery = "INSERT INTO Customer (FirstName, LastName, Address) VALUES (@FirstName, @Lastname, @Address);";
+                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
+
+                    connection.Open();
+
+                    adapter.InsertCommand.Parameters.Add("@FirstName", SqlDbType.NVarChar).Value = postCustomer.FirstName;
+                    adapter.InsertCommand.Parameters.Add("@LastName", SqlDbType.NVarChar).Value = postCustomer.LastName;
+                    adapter.InsertCommand.Parameters.Add("@Address", SqlDbType.NVarChar).Value = postCustomer.Address;
+                    adapter.InsertCommand.ExecuteNonQuery();
+
+                    connection.Close();
+
+                    return Request.CreateResponse(HttpStatusCode.OK);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Provided an empty object!");
+                }
+            }
+        }
 
 
-        //// PUT api/values/2
-        //[HttpPut]
-        //[Route("customer/update/{id}")]
-        //public HttpResponseMessage PutById(Guid id, Customer customer)
-        //{
-        //    var item = customers.Find(r => r.Id == id);
+        // PUT api/values/2
+        [HttpPut]
+        [Route("customer/update/{id}")]
+        public HttpResponseMessage PutById(Guid Id, Customer updateCustomer)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
 
-        //    item.Id = customer.Id;
-        //    item.FirstName = customer.FirstName;
-        //    item.LastName = customer.LastName;
-        //    item.Address = customer.Address;
-        //    item.OwnedTractors = customer.OwnedTractors;
+            using (connection)
+            {
+                connection.Open();
 
+                string sqlQuery = $"SELECT * FROM Customer WHERE Id = '{Id}';";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                SqlDataReader reader = command.ExecuteReader();
 
-        //    if (item == null)
-        //    {
-        //        return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no element with id {id}!");
-        //    }
-        //    return Request.CreateResponse(HttpStatusCode.OK, customers);
-        //}
+                if (reader.Read())
+                {
+                    connection.Close();
+                    connection.Open();
 
-        //// DELETE api/values/2
-        //[HttpDelete]
-        //[Route("customer/delete/{id}")]
-        //public HttpResponseMessage DeleteById(Guid id)
-        //{
+                    SqlDataAdapter adapter = new SqlDataAdapter();
+                    sqlQuery = $"UPDATE Customer SET FirstName = @FirstName, LastName = @LastName, Address = @Address WHERE Id = '{Id}';";
+                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
 
-        //    if (id == null)
-        //    {
-        //        return Request.CreateResponse(HttpStatusCode.BadRequest, "Provided an non existing id!");
-        //    }
+                    adapter.InsertCommand.Parameters.Add("@FirstName", SqlDbType.NVarChar).Value = updateCustomer.FirstName;
+                    adapter.InsertCommand.Parameters.Add("@LastName", SqlDbType.NVarChar).Value = updateCustomer.LastName;
+                    adapter.InsertCommand.Parameters.Add("@Address", SqlDbType.NVarChar).Value = updateCustomer.Address;
+                    adapter.InsertCommand.ExecuteNonQuery();
 
-        //    var item = customers.Find(r => r.Id == id);
-        //    customers.Remove(item);
+                    connection.Close();
 
-        //    if (item == null)
-        //    {
-        //        return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no element with id {id}!");
-        //    }
-        //    return Request.CreateResponse(HttpStatusCode.OK, customers);
+                    return Request.CreateResponse(HttpStatusCode.OK);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "There is no Customer with that id.");
+                }
+            }
+        }
 
-        //}
+        // DELETE api/values/2
+        [HttpDelete]
+        [Route("customer/delete/{id}")]
+        public HttpResponseMessage DeleteById(Guid Id)
+        {
+
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            using (connection)
+            {
+                connection.Open();
+
+                string sqlQuery = $"SELECT * FROM Customer WHERE Id = '{Id}';";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    connection.Close();
+                    connection.Open();
+
+                    SqlDataAdapter adapter = new SqlDataAdapter();
+                    sqlQuery = $"DELETE FROM Customer WHERE Id = '{Id}';";
+                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
+                    adapter.InsertCommand.ExecuteNonQuery();
+
+                    connection.Close();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, "Customer is deleted.");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "There is no Customer with that id.");
+                }
+            }
+        }
     }
 }

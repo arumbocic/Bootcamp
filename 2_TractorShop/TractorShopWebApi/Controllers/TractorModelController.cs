@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -28,7 +26,6 @@ namespace TractorShopWebApi.Controllers
                 connection.Open();
 
                 SqlDataReader reader = command.ExecuteReader();
-
                 List<TractorModel> tractorModels = new List<TractorModel>();
 
                 if (reader.HasRows)
@@ -45,14 +42,15 @@ namespace TractorShopWebApi.Controllers
                         tractorModels.Add(tractorModel);
                     }
 
+                    reader.Close();
+                    connection.Close();
+
                     return Request.CreateResponse(HttpStatusCode.OK, tractorModels);
                 }
                 else
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, "The list is empty!");
                 }
-                reader.Close();
-                connection.Close();
             }
         }
 
@@ -101,22 +99,22 @@ namespace TractorShopWebApi.Controllers
         [Route("tractormodel/set")]
         public HttpResponseMessage Post(TractorModel postModel)
         {
-            SqlConnection conn = new SqlConnection(connectionString);
-            using (conn)
+            SqlConnection connection = new SqlConnection(connectionString);
+            using (connection)
             {
                 if (postModel != null)
                 {
-                    SqlDataAdapter da = new SqlDataAdapter();
+                    SqlDataAdapter adapter = new SqlDataAdapter();
                     string sqlQuery = "INSERT INTO TractorModel (Model, BrandId) VALUES (@Model, @BrandId);";
-                    da.InsertCommand = new SqlCommand(sqlQuery, conn);
+                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
 
-                    conn.Open();
+                    connection.Open();
 
-                    da.InsertCommand.Parameters.Add("@Model", SqlDbType.NVarChar).Value = postModel.Model;
-                    da.InsertCommand.Parameters.Add("@BrandId", SqlDbType.Int).Value = postModel.BrandId;
-                    da.InsertCommand.ExecuteNonQuery();
+                    adapter.InsertCommand.Parameters.Add("@Model", SqlDbType.NVarChar).Value = postModel.Model;
+                    adapter.InsertCommand.Parameters.Add("@BrandId", SqlDbType.Int).Value = postModel.BrandId;
+                    adapter.InsertCommand.ExecuteNonQuery();
 
-                    conn.Close();
+                    connection.Close();
 
                     return Request.CreateResponse(HttpStatusCode.OK);
                 }
@@ -143,21 +141,20 @@ namespace TractorShopWebApi.Controllers
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
                 SqlDataReader reader = command.ExecuteReader();
 
-                //TODO: check why this works, and didn't work with : if(reader.HasRows)
-                //Does this reader.Read() "selects" first row, and that's why this works?
                 if (reader.Read())
                 {
                     connection.Close();
                     connection.Open();
-                    SqlDataAdapter da = new SqlDataAdapter();
+                    SqlDataAdapter adapter = new SqlDataAdapter();
                     sqlQuery = $"UPDATE TractorModel SET Model = @Model, BrandId = @BrandId WHERE Id = '{Id}';";
-                    da.InsertCommand = new SqlCommand(sqlQuery, connection);
+                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
 
-                    da.InsertCommand.Parameters.Add("@Model", SqlDbType.NVarChar).Value = updateModel.Model;
-                    da.InsertCommand.Parameters.Add("@BrandId", SqlDbType.Int).Value = updateModel.BrandId;
-                    da.InsertCommand.ExecuteNonQuery();
+                    adapter.InsertCommand.Parameters.Add("@Model", SqlDbType.NVarChar).Value = updateModel.Model;
+                    adapter.InsertCommand.Parameters.Add("@BrandId", SqlDbType.Int).Value = updateModel.BrandId;
+                    adapter.InsertCommand.ExecuteNonQuery();
 
                     connection.Close();
+
                     return Request.CreateResponse(HttpStatusCode.OK);
                 }
                 else
@@ -182,18 +179,18 @@ namespace TractorShopWebApi.Controllers
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
                 SqlDataReader reader = command.ExecuteReader();
 
-                //TODO: check why this works, and didn't work with : if(reader.HasRows)
-                //Does this reader.Read() "selects" first row, and that's why this works?
                 if (reader.Read())
                 {
                     connection.Close();
                     connection.Open();
-                    SqlDataAdapter da = new SqlDataAdapter();
+
+                    SqlDataAdapter adapter = new SqlDataAdapter();
                     sqlQuery = $"DELETE FROM TractorModel WHERE Id = '{Id}';";
-                    da.InsertCommand = new SqlCommand(sqlQuery, connection);
-                    da.InsertCommand.ExecuteNonQuery();
+                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
+                    adapter.InsertCommand.ExecuteNonQuery();
 
                     connection.Close();
+
                     return Request.CreateResponse(HttpStatusCode.OK, "TractorModel is deleted.");
                 }
                 else
