@@ -72,30 +72,26 @@ namespace TractorShopWebApi.Controllers
 
                 SqlDataReader reader = command.ExecuteReader();
 
-                List<TractorModel> tractorModels = new List<TractorModel>();
-
-                if (reader.HasRows)
+                //TODO: check why this works, and didn't work with : if(reader.HasRows)
+                //Does this reader.Read() "selects" first row, and that's why this works?
+                if (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        TractorModel tractorModel = new TractorModel();
+                    TractorModel tractorModel = new TractorModel();
 
-                        tractorModel.Id = reader.GetInt32(0);
-                        tractorModel.Model = reader.GetString(1);
-                        tractorModel.Code = reader.GetGuid(2);
-                        tractorModel.BrandId = reader.GetInt32(3);
+                    tractorModel.Id = reader.GetInt32(0);
+                    tractorModel.Model = reader.GetString(1);
+                    tractorModel.Code = reader.GetGuid(2);
+                    tractorModel.BrandId = reader.GetInt32(3);
 
-                        tractorModels.Add(tractorModel);
-                    }
+                    reader.Close();
+                    connection.Close();
 
-                    return Request.CreateResponse(HttpStatusCode.OK, tractorModels);
+                    return Request.CreateResponse(HttpStatusCode.OK, tractorModel);
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "The list is empty!");
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "There is no TractorModel with that id.");
                 }
-                reader.Close();
-                connection.Close();
             }
         }
 
@@ -137,58 +133,75 @@ namespace TractorShopWebApi.Controllers
         [Route("tractormodel/update/{id}")]
         public HttpResponseMessage UpdateById(int Id, TractorModel updateModel)
         {
-            SqlConnection conn = new SqlConnection(connectionString);
-            using (conn)
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            using (connection)
             {
-                if (updateModel != null)
+                connection.Open();
+
+                string sqlQuery = $"SELECT * FROM TractorModel WHERE Id = '{Id}';";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                //TODO: check why this works, and didn't work with : if(reader.HasRows)
+                //Does this reader.Read() "selects" first row, and that's why this works?
+                if (reader.Read())
                 {
-                    conn.Open();
-
-                    string sqlQuery1 = $"SELECT Id FROM TractorModel;";
-                    SqlCommand command = new SqlCommand(sqlQuery1, conn);
-                    SqlDataReader dr = command.ExecuteReader();
-
-
-
-
+                    connection.Close();
+                    connection.Open();
                     SqlDataAdapter da = new SqlDataAdapter();
-                    string sqlQuery2 = $"UPDATE TABLE TractorModel SET Model = @Model, BrandId = @BrandId WHERE Id = '{updateModel.Id}';";
-                    da.InsertCommand = new SqlCommand(sqlQuery2, conn);
+                    sqlQuery = $"UPDATE TractorModel SET Model = @Model, BrandId = @BrandId WHERE Id = '{Id}';";
+                    da.InsertCommand = new SqlCommand(sqlQuery, connection);
+
                     da.InsertCommand.Parameters.Add("@Model", SqlDbType.NVarChar).Value = updateModel.Model;
                     da.InsertCommand.Parameters.Add("@BrandId", SqlDbType.Int).Value = updateModel.BrandId;
                     da.InsertCommand.ExecuteNonQuery();
 
-                    conn.Close();
-
+                    connection.Close();
                     return Request.CreateResponse(HttpStatusCode.OK);
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no element with id {updateModel.Id}!");
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "There is no TractorModel with that id.");
                 }
             }
         }
 
-        //// DELETE api/values/5
-        //[HttpDelete]
-        //[Route("tractormodel/delete/{id}")]
-        //public HttpResponseMessage DeleteById(Guid id)
-        //{
+        // DELETE api/values/5
+        [HttpDelete]
+        [Route("tractormodel/delete/{id}")]
+        public HttpResponseMessage DeleteById(int Id)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
 
-        //    if (id == null)
-        //    {
-        //        return Request.CreateResponse(HttpStatusCode.BadRequest, "Provided an non existing id!");
-        //    }
+            using (connection)
+            {
+                connection.Open();
 
-        //    var item = machines.Find(r => r.Id == id);
-        //    machines.Remove(item);
+                string sqlQuery = $"SELECT * FROM TractorModel WHERE Id = '{Id}';";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                SqlDataReader reader = command.ExecuteReader();
 
-        //    if (item == null)
-        //    {
-        //        return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no element with id {id}!");
-        //    }
-        //    return Request.CreateResponse(HttpStatusCode.OK, machines);
+                //TODO: check why this works, and didn't work with : if(reader.HasRows)
+                //Does this reader.Read() "selects" first row, and that's why this works?
+                if (reader.Read())
+                {
+                    connection.Close();
+                    connection.Open();
+                    SqlDataAdapter da = new SqlDataAdapter();
+                    sqlQuery = $"DELETE FROM TractorModel WHERE Id = '{Id}';";
+                    da.InsertCommand = new SqlCommand(sqlQuery, connection);
+                    da.InsertCommand.ExecuteNonQuery();
 
-        //}
+                    connection.Close();
+                    return Request.CreateResponse(HttpStatusCode.OK, "TractorModel is deleted.");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "There is no TractorModel with that id.");
+                }
+            }
+
+        }
     }
 }
