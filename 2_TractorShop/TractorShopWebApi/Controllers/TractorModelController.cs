@@ -1,204 +1,140 @@
 ﻿using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using TractorShopWebApi.Models;
+using TractorShop.Model;
+using TractorShop.Service;
 
 namespace TractorShopWebApi.Controllers
 {
     public class TractorModelController : ApiController
     {
-        static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TractorShopDB;Integrated Security=True";
+        #region GetAll 
 
         // GET api/values
         [HttpGet]
         [Route("tractormodel/getall")]
         public HttpResponseMessage GetAll()
         {
-            SqlConnection connection = new SqlConnection(connectionString);
+            TractorModelService tractorModelService = new TractorModelService();
+            List<TractorModelEntity> tractorModels = tractorModelService.GetAll();
 
-            using (connection)
+            if (tractorModels.Any())
             {
-                SqlCommand command = new SqlCommand("SELECT * FROM TractorModel;", connection);
-
-                connection.Open();
-
-                SqlDataReader reader = command.ExecuteReader();
-                List<TractorModel> tractorModels = new List<TractorModel>();
-
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        TractorModel tractorModel = new TractorModel();
-
-                        tractorModel.Id = reader.GetInt32(0);
-                        tractorModel.Model = reader.GetString(1);
-                        tractorModel.Code = reader.GetGuid(2);
-                        tractorModel.BrandId = reader.GetInt32(3);
-
-                        tractorModels.Add(tractorModel);
-                    }
-
-                    reader.Close();
-                    connection.Close();
-
-                    return Request.CreateResponse(HttpStatusCode.OK, tractorModels);
-                }
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "The list is empty!");
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, tractorModels);
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, "The list is empty!");
             }
         }
+        #endregion
 
+        #region GetById
         // GET api/values/5
         //TODO: Postavi stupac Model na Unique values
         [HttpGet]
         [Route("tractormodel/get/{id}")]
         public HttpResponseMessage GetById(int Id)
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            using (connection)
+            if (Id > 0)
             {
-                SqlCommand command = new SqlCommand($"SELECT * FROM TractorModel WHERE Id = '{Id}';", connection);
+                TractorModelService tractorModelService = new TractorModelService();
+                TractorModelEntity tractorModelEntity = tractorModelService.GetById(Id);
 
-                connection.Open();
-
-                SqlDataReader reader = command.ExecuteReader();
-
-                //TODO: check why this works, and didn't work with : if(reader.HasRows)
-                //Does this reader.Read() "selects" first row, and that's why this works?
-                if (reader.Read())
+                if (tractorModelEntity != null)
                 {
-                    TractorModel tractorModel = new TractorModel();
-
-                    tractorModel.Id = reader.GetInt32(0);
-                    tractorModel.Model = reader.GetString(1);
-                    tractorModel.Code = reader.GetGuid(2);
-                    tractorModel.BrandId = reader.GetInt32(3);
-
-                    reader.Close();
-                    connection.Close();
-
-                    return Request.CreateResponse(HttpStatusCode.OK, tractorModel);
+                    return Request.CreateResponse(HttpStatusCode.OK, tractorModelEntity);
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "There is no TractorModel with that id.");
+                    return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no Tractor Model with id: {Id}");
                 }
             }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Id is not valid.");
+            }
         }
+        #endregion
 
-
+        #region Create
         // POST api/values
         [HttpPost]
         [Route("tractormodel/set")]
-        public HttpResponseMessage Post(TractorModel postModel)
+        public HttpResponseMessage Post(TractorModelEntity postModel)
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-            using (connection)
+            if (postModel == null)
             {
-                if (postModel != null)
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Provided an empty object!");
+            }
+            else
+            {
+                //TODO: Dodati provjeru postoji li BrandId u tablici s brandovima
+                if (string.IsNullOrEmpty(postModel.Model) || postModel.BrandId == 0)
                 {
-                    SqlDataAdapter adapter = new SqlDataAdapter();
-                    string sqlQuery = "INSERT INTO TractorModel (Model, BrandId) VALUES (@Model, @BrandId);";
-                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
-
-                    connection.Open();
-
-                    adapter.InsertCommand.Parameters.Add("@Model", SqlDbType.NVarChar).Value = postModel.Model;
-                    adapter.InsertCommand.Parameters.Add("@BrandId", SqlDbType.Int).Value = postModel.BrandId;
-                    adapter.InsertCommand.ExecuteNonQuery();
-
-                    connection.Close();
-
-                    return Request.CreateResponse(HttpStatusCode.OK);
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Check if you provided all required properties for an object.");
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Provided an empty object!");
+                    TractorModelService tractorModelService = new TractorModelService();
+                    tractorModelService.Post(postModel);
+                    return Request.CreateResponse(HttpStatusCode.OK);
+                    //TODO: provjeriti zašto ne pospremi u bazu kad u Response proslijedim "postModel" objekt
                 }
             }
         }
+        #endregion
 
-
+        #region Update
         // PUT api/values/5
+        //TODO: napraviti handleanje situacija kad ne pošaljem određenu vrijednost propertyja (npr. nisam poslao vrijednost za "Model"
         [HttpPut]
         [Route("tractormodel/update/{id}")]
-        public HttpResponseMessage UpdateById(int Id, TractorModel updateModel)
+        public HttpResponseMessage UpdateById(int Id, TractorModelEntity updateModel)
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            using (connection)
+            if (Id > 0 && updateModel != null)
             {
-                connection.Open();
+                TractorModelService tractorModelService = new TractorModelService();
+                TractorModelEntity tractorModelHelp = tractorModelService.GetById(Id);
 
-                string sqlQuery = $"SELECT * FROM TractorModel WHERE Id = '{Id}';";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
+                if (tractorModelHelp != null)
                 {
-                    connection.Close();
-                    connection.Open();
-                    SqlDataAdapter adapter = new SqlDataAdapter();
-                    sqlQuery = $"UPDATE TractorModel SET Model = @Model, BrandId = @BrandId WHERE Id = '{Id}';";
-                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
-
-                    adapter.InsertCommand.Parameters.Add("@Model", SqlDbType.NVarChar).Value = updateModel.Model;
-                    adapter.InsertCommand.Parameters.Add("@BrandId", SqlDbType.Int).Value = updateModel.BrandId;
-                    adapter.InsertCommand.ExecuteNonQuery();
-
-                    connection.Close();
-
+                    tractorModelService.UpdateById(Id, updateModel);
                     return Request.CreateResponse(HttpStatusCode.OK);
+                    //TODO: provjeriti zašto ne pospremi u bazu kad u Response proslijedim "postModel" objekt
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "There is no TractorModel with that id.");
+                    return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no Tractor Model with id: {Id}");
                 }
             }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Id is not valid and/or object is not provided.");
+            }
         }
+        #endregion
 
+        #region Delete
         // DELETE api/values/5
         [HttpDelete]
         [Route("tractormodel/delete/{id}")]
         public HttpResponseMessage DeleteById(int Id)
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            using (connection)
+            if (Id > 0)
             {
-                connection.Open();
-
-                string sqlQuery = $"SELECT * FROM TractorModel WHERE Id = '{Id}';";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    connection.Close();
-                    connection.Open();
-
-                    SqlDataAdapter adapter = new SqlDataAdapter();
-                    sqlQuery = $"DELETE FROM TractorModel WHERE Id = '{Id}';";
-                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
-                    adapter.InsertCommand.ExecuteNonQuery();
-
-                    connection.Close();
-
-                    return Request.CreateResponse(HttpStatusCode.OK, "TractorModel is deleted.");
-                }
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "There is no TractorModel with that id.");
-                }
+                TractorModelService tractorModelService = new TractorModelService();
+                tractorModelService.DeleteById(Id);
+                return Request.CreateResponse(HttpStatusCode.OK);
+                //TODO: provjeriti zašto ne pospremi u bazu kad u Response proslijedim "postModel" objekt
             }
-
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Provided an empty object!");
+            }
         }
+        #endregion
     }
 }

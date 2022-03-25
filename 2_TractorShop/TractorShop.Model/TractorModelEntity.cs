@@ -1,8 +1,9 @@
 ﻿using System;
+using TractorShop.Model.Common;
 
-namespace TractorShopWebApi.Models
+namespace TractorShop.Model
 {
-    public class TractorModel
+    public class TractorModelEntity : ITractorModelEntity
     {
         public int Id { get; set; }
         public string Model { get; set; }

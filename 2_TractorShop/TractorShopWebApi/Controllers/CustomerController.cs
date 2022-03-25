@@ -27,13 +27,13 @@ namespace TractorShopWebApi.Controllers
                 connection.Open();
 
                 SqlDataReader reader = command.ExecuteReader();
-                List<Customer> customers = new List<Customer>();
+                List<CustomerREST> customers = new List<CustomerREST>();
 
                 if (reader.HasRows)
                 {
                     while (reader.Read())
                     {
-                        Customer customer = new Customer();
+                        CustomerREST customer = new CustomerREST();
 
                         customer.Id = reader.GetGuid(0);
                         customer.FirstName = reader.GetString(1);
@@ -74,7 +74,7 @@ namespace TractorShopWebApi.Controllers
                 //Does this reader.Read() "selects" first row, and that's why this works?
                 if (reader.Read())
                 {
-                    Customer customer = new Customer();
+                    CustomerREST customer = new CustomerREST();
 
                     customer.Id = reader.GetGuid(0);
                     customer.FirstName = reader.GetString(1);
@@ -96,7 +96,7 @@ namespace TractorShopWebApi.Controllers
         // POST api/values
         [HttpPost]
         [Route("customer/set")]
-        public HttpResponseMessage Post(Customer postCustomer)
+        public HttpResponseMessage Post(CustomerREST postCustomer)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             using (connection)
@@ -117,6 +117,8 @@ namespace TractorShopWebApi.Controllers
                     connection.Close();
 
                     return Request.CreateResponse(HttpStatusCode.OK);
+
+                    //TODO: provjeriti zašto ne pospremi u bazu kad u Response proslijedim "postCustomer" objekt
                 }
                 else
                 {
@@ -129,7 +131,7 @@ namespace TractorShopWebApi.Controllers
         // PUT api/values/2
         [HttpPut]
         [Route("customer/update/{id}")]
-        public HttpResponseMessage PutById(Guid Id, Customer updateCustomer)
+        public HttpResponseMessage PutById(Guid Id, CustomerREST updateCustomer)
         {
             SqlConnection connection = new SqlConnection(connectionString);
 

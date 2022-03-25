@@ -166,3 +166,16 @@ C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\System.Web.We
 C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\Antlr3.Runtime.pdb
 C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\obj\Debug\TractorShopWebApi.csproj.CopyComplete
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\obj\Debug\TractorShopWebApi.csproj.AssemblyReference.cache
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\TractorShop.Model.dll
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\TractorShop.Service.dll
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\TractorShop.Repository.dll
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\TractorShop.Model.pdb
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\TractorShop.Service.pdb
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\TractorShop.Repository.pdb
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\TractorShop.Model.Common.dll
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\TractorShop.Service.Common.dll
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\TractorShop.Repository.Common.dll
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\TractorShop.Model.Common.pdb
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\TractorShop.Service.Common.pdb
+C:\Users\arumb\source\Bootcamp\2_TractorShop\TractorShopWebApi\bin\TractorShop.Repository.Common.pdb

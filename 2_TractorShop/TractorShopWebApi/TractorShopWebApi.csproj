@@ -161,8 +161,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Customer.cs" />
-    <Compile Include="Models\TractorModel.cs" />
+    <Compile Include="Models\CustomerREST.cs" />
+    <Compile Include="Models\TractorModelREST.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +247,16 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TractorShop.Model\TractorShop.Model.csproj">
+      <Project>{4EF39434-1CE7-48FE-B9A2-0EBF7318DBF1}</Project>
+      <Name>TractorShop.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TractorShop.Service\TractorShop.Service.csproj">
+      <Project>{16ba00d3-eefe-4cb5-ab52-d9e47690cf4b}</Project>
+      <Name>TractorShop.Service</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
