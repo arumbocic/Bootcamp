@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Web.Http;
 using TractorShop.Model;
 using TractorShop.Service;
+using TractorShopWebApi.Models;
 
 namespace TractorShopWebApi.Controllers
 {
@@ -19,10 +20,22 @@ namespace TractorShopWebApi.Controllers
         {
             TractorModelService tractorModelService = new TractorModelService();
             List<TractorModelEntity> tractorModels = tractorModelService.GetAll();
+            List<TractorModelREST> tractorModelsRest = new List<TractorModelREST>();
 
-            if (tractorModels.Any())
+            foreach (var model in tractorModels)
             {
-                return Request.CreateResponse(HttpStatusCode.OK, tractorModels);
+                TractorModelREST tractorModelRest = new TractorModelREST();
+
+                tractorModelRest.Model = model.Model;
+                tractorModelRest.CatalogueCode = model.CatalogueCode;
+                tractorModelRest.BrandId = model.BrandId;
+
+                tractorModelsRest.Add(tractorModelRest);
+            }
+
+            if (tractorModelsRest.Any())
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, tractorModelsRest);
             }
             else
             {
@@ -34,6 +47,7 @@ namespace TractorShopWebApi.Controllers
         #region GetById
         // GET api/values/5
         //TODO: Postavi stupac Model na Unique values
+
         [HttpGet]
         [Route("tractormodel/get/{id}")]
         public HttpResponseMessage GetById(int Id)
@@ -42,10 +56,15 @@ namespace TractorShopWebApi.Controllers
             {
                 TractorModelService tractorModelService = new TractorModelService();
                 TractorModelEntity tractorModelEntity = tractorModelService.GetById(Id);
+                TractorModelREST tractorModelRest = new TractorModelREST();
 
-                if (tractorModelEntity != null)
+                tractorModelRest.Model = tractorModelEntity.Model;
+                tractorModelRest.CatalogueCode = tractorModelEntity.CatalogueCode;
+                tractorModelRest.BrandId = tractorModelEntity.BrandId;
+
+                if (tractorModelRest != null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, tractorModelEntity);
+                    return Request.CreateResponse(HttpStatusCode.OK, tractorModelRest);
                 }
                 else
                 {
@@ -63,7 +82,7 @@ namespace TractorShopWebApi.Controllers
         // POST api/values
         [HttpPost]
         [Route("tractormodel/set")]
-        public HttpResponseMessage Post(TractorModelEntity postModel)
+        public HttpResponseMessage Post(TractorModelREST postModel)
         {
             if (postModel == null)
             {
@@ -71,17 +90,28 @@ namespace TractorShopWebApi.Controllers
             }
             else
             {
-                //TODO: Dodati provjeru postoji li BrandId u tablici s brandovima
+                //TODO: Dodati provjeru postoji li BrandId u tablici s brandovima.
+                //Ovo je vjerojatno rješivo koristeći dropdown meni na frontendu, ali bilo bi kul pronaći način za provjeru ovoga.
+                //Caka je u tom što je taj podatak u drugoj tablici.
+
                 if (string.IsNullOrEmpty(postModel.Model) || postModel.BrandId == 0)
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "Check if you provided all required properties for an object.");
                 }
                 else
                 {
+                    TractorModelEntity tractorModelEntity = new TractorModelEntity();
                     TractorModelService tractorModelService = new TractorModelService();
-                    tractorModelService.Post(postModel);
-                    return Request.CreateResponse(HttpStatusCode.OK);
-                    //TODO: provjeriti zašto ne pospremi u bazu kad u Response proslijedim "postModel" objekt
+
+                    tractorModelEntity.Model = postModel.Model;
+                    tractorModelEntity.BrandId = postModel.BrandId;
+
+                    tractorModelService.Post(tractorModelEntity);
+                    return Request.CreateResponse(HttpStatusCode.OK, "Object is created.");
+
+                    //TODO: provjeriti kako dohvatiti ubačeni podatak iz baze.
+                    //U slučaju kada samo "tractorModelEntity ubacim kao parametar za vraćanje,
+                    //vrati mi objekt s neispravnim Id i Catalogue kodom.
                 }
             }
         }
@@ -89,10 +119,12 @@ namespace TractorShopWebApi.Controllers
 
         #region Update
         // PUT api/values/5
-        //TODO: napraviti handleanje situacija kad ne pošaljem određenu vrijednost propertyja (npr. nisam poslao vrijednost za "Model"
+        //TODO: napraviti handleanje situacija kad ne pošaljem određenu vrijednost propertyja
+        //(npr. nisam poslao vrijednost za "Model")
+
         [HttpPut]
         [Route("tractormodel/update/{id}")]
-        public HttpResponseMessage UpdateById(int Id, TractorModelEntity updateModel)
+        public HttpResponseMessage UpdateById(int Id, TractorModelREST updateModel)
         {
             if (Id > 0 && updateModel != null)
             {
@@ -101,9 +133,13 @@ namespace TractorShopWebApi.Controllers
 
                 if (tractorModelHelp != null)
                 {
-                    tractorModelService.UpdateById(Id, updateModel);
+                    TractorModelEntity tractorModelEntity = new TractorModelEntity();
+
+                    tractorModelEntity.Model = updateModel.Model;
+                    tractorModelEntity.BrandId = updateModel.BrandId;
+
+                    tractorModelService.UpdateById(Id, tractorModelEntity);
                     return Request.CreateResponse(HttpStatusCode.OK);
-                    //TODO: provjeriti zašto ne pospremi u bazu kad u Response proslijedim "postModel" objekt
                 }
                 else
                 {
@@ -126,9 +162,9 @@ namespace TractorShopWebApi.Controllers
             if (Id > 0)
             {
                 TractorModelService tractorModelService = new TractorModelService();
+
                 tractorModelService.DeleteById(Id);
                 return Request.CreateResponse(HttpStatusCode.OK);
-                //TODO: provjeriti zašto ne pospremi u bazu kad u Response proslijedim "postModel" objekt
             }
             else
             {

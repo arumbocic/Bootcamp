@@ -7,7 +7,7 @@ namespace TractorShop.Model
     {
         public int Id { get; set; }
         public string Model { get; set; }
-        public Guid Code { get; set; }
+        public Guid CatalogueCode { get; set; }
         public int BrandId { get; set; }
     }
 }

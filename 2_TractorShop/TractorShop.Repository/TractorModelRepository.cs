@@ -32,7 +32,7 @@ namespace TractorShop.Repository
 
                         tractorModel.Id = reader.GetInt32(0);
                         tractorModel.Model = reader.GetString(1);
-                        tractorModel.Code = reader.GetGuid(2);
+                        tractorModel.CatalogueCode = reader.GetGuid(2);
                         tractorModel.BrandId = reader.GetInt32(3);
 
                         tractorModels.Add(tractorModel);
@@ -66,7 +66,7 @@ namespace TractorShop.Repository
                 {
                     tractorModel.Id = reader.GetInt32(0);
                     tractorModel.Model = reader.GetString(1);
-                    tractorModel.Code = reader.GetGuid(2);
+                    tractorModel.CatalogueCode = reader.GetGuid(2);
                     tractorModel.BrandId = reader.GetInt32(3);
 
                     reader.Close();
