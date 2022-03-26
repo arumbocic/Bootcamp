@@ -1,208 +1,184 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using TractorShop.Model;
+using TractorShop.Service;
 using TractorShopWebApi.Models;
 
 namespace TractorShopWebApi.Controllers
 {
     public class CustomerController : ApiController
     {
-        static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TractorShopDB;Integrated Security=True";
+        #region GetAll 
 
         // GET api/values
         [HttpGet]
         [Route("customer/getall")]
         public HttpResponseMessage GetAll()
         {
-            SqlConnection connection = new SqlConnection(connectionString);
+            CustomerService customerService = new CustomerService();
+            List<CustomerEntity> customers = customerService.GetAll();
+            List<CustomerREST> customersRest = new List<CustomerREST>();
 
-            using (connection)
+            foreach (var customer in customers)
             {
-                SqlCommand command = new SqlCommand("SELECT * FROM Customer;", connection);
+                CustomerREST customerRest = new CustomerREST();
 
-                connection.Open();
+                customerRest.FirstName = customer.FirstName;
+                customerRest.LastName = customer.LastName;
+                customerRest.Address = customer.Address;
 
-                SqlDataReader reader = command.ExecuteReader();
-                List<CustomerREST> customers = new List<CustomerREST>();
+                customersRest.Add(customerRest);
+            }
 
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        CustomerREST customer = new CustomerREST();
-
-                        customer.Id = reader.GetGuid(0);
-                        customer.FirstName = reader.GetString(1);
-                        customer.LastName = reader.GetString(2);
-                        customer.Address = reader.GetString(3);
-
-                        customers.Add(customer);
-                    }
-
-                    reader.Close();
-                    connection.Close();
-
-                    return Request.CreateResponse(HttpStatusCode.OK, customers);
-                }
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "The list is empty!");
-                }
+            if (customersRest.Any())
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, customersRest);
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, "The list of customers is empty!");
             }
         }
+        #endregion
 
-        // GET api/values/2
+        #region GetById
+        // GET api/values/5
+        //TODO: Postavi stupac Model na Unique values
+
         [HttpGet]
         [Route("customer/get/{id}")]
         public HttpResponseMessage GetById(Guid Id)
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            using (connection)
+            if (Id != Guid.Empty)
             {
-                SqlCommand command = new SqlCommand($"SELECT * FROM Customer WHERE Id = '{Id}';", connection);
+                CustomerService customerService = new CustomerService();
+                CustomerEntity customerEntity = customerService.GetById(Id);
 
-                connection.Open();
-
-                SqlDataReader reader = command.ExecuteReader();
-
-                //TODO: check why this works, and didn't work with : if(reader.HasRows)
-                //Does this reader.Read() "selects" first row, and that's why this works?
-                if (reader.Read())
+                if (customerEntity != null)
                 {
-                    CustomerREST customer = new CustomerREST();
+                    CustomerREST customerRest = new CustomerREST();
 
-                    customer.Id = reader.GetGuid(0);
-                    customer.FirstName = reader.GetString(1);
-                    customer.LastName = reader.GetString(2);
-                    customer.Address = reader.GetString(3);
+                    customerRest.FirstName = customerEntity.FirstName;
+                    customerRest.LastName = customerEntity.LastName;
+                    customerRest.Address = customerEntity.Address;
 
-                    reader.Close();
-                    connection.Close();
-
-                    return Request.CreateResponse(HttpStatusCode.OK, customer);
+                    return Request.CreateResponse(HttpStatusCode.OK, customerRest);
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "There is no Customer with that id.");
+                    return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no customer with id: {Id}");
                 }
             }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Id is not valid.");
+            }
         }
+        #endregion
 
+        #region Create
         // POST api/values
         [HttpPost]
         [Route("customer/set")]
         public HttpResponseMessage Post(CustomerREST postCustomer)
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-            using (connection)
+            if (postCustomer == null)
             {
-                if (postCustomer != null)
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Provided an empty object!");
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(postCustomer.FirstName) || string.IsNullOrEmpty(postCustomer.LastName) || string.IsNullOrEmpty(postCustomer.Address))
                 {
-                    SqlDataAdapter adapter = new SqlDataAdapter();
-                    string sqlQuery = "INSERT INTO Customer (FirstName, LastName, Address) VALUES (@FirstName, @Lastname, @Address);";
-                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
-
-                    connection.Open();
-
-                    adapter.InsertCommand.Parameters.Add("@FirstName", SqlDbType.NVarChar).Value = postCustomer.FirstName;
-                    adapter.InsertCommand.Parameters.Add("@LastName", SqlDbType.NVarChar).Value = postCustomer.LastName;
-                    adapter.InsertCommand.Parameters.Add("@Address", SqlDbType.NVarChar).Value = postCustomer.Address;
-                    adapter.InsertCommand.ExecuteNonQuery();
-
-                    connection.Close();
-
-                    return Request.CreateResponse(HttpStatusCode.OK);
-
-                    //TODO: provjeriti zašto ne pospremi u bazu kad u Response proslijedim "postCustomer" objekt
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Check if you provided all required properties for an object.");
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Provided an empty object!");
+                    CustomerEntity customerEntity = new CustomerEntity();
+                    CustomerService customerService = new CustomerService();
+
+                    customerEntity.FirstName = postCustomer.FirstName;
+                    customerEntity.LastName = postCustomer.LastName;
+                    customerEntity.Address = postCustomer.Address;
+
+                    customerService.Post(customerEntity);
+                    return Request.CreateResponse(HttpStatusCode.OK, "Customer is created.");
+
+                    //TODO: provjeriti kako dohvatiti ubačeni podatak iz baze.
+                    //U slučaju kada samo "customerEntity ubacim kao parametar za vraćanje,
+                    //vrati mi objekt s neispravnim Id i Catalogue kodom.
                 }
             }
         }
+        #endregion
 
+        #region Update
+        // PUT api/values/5
+        //TODO: napraviti handleanje situacija kad ne pošaljem određenu vrijednost propertyja
+        //(npr. nisam poslao vrijednost za "LastName")
 
-        // PUT api/values/2
         [HttpPut]
         [Route("customer/update/{id}")]
-        public HttpResponseMessage PutById(Guid Id, CustomerREST updateCustomer)
+        public HttpResponseMessage UpdateById(Guid Id, CustomerREST updateCustomer)
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            using (connection)
+            if (Id != Guid.Empty && updateCustomer != null)
             {
-                connection.Open();
+                CustomerService customerService = new CustomerService();
+                CustomerEntity customerHelp = customerService.GetById(Id);
 
-                string sqlQuery = $"SELECT * FROM Customer WHERE Id = '{Id}';";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
+                if (customerHelp != null)
                 {
-                    connection.Close();
-                    connection.Open();
+                    CustomerEntity customerEntity = new CustomerEntity();
 
-                    SqlDataAdapter adapter = new SqlDataAdapter();
-                    sqlQuery = $"UPDATE Customer SET FirstName = @FirstName, LastName = @LastName, Address = @Address WHERE Id = '{Id}';";
-                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
+                    customerEntity.FirstName = updateCustomer.FirstName;
+                    customerEntity.LastName = updateCustomer.LastName;
+                    customerEntity.Address = updateCustomer.Address;
 
-                    adapter.InsertCommand.Parameters.Add("@FirstName", SqlDbType.NVarChar).Value = updateCustomer.FirstName;
-                    adapter.InsertCommand.Parameters.Add("@LastName", SqlDbType.NVarChar).Value = updateCustomer.LastName;
-                    adapter.InsertCommand.Parameters.Add("@Address", SqlDbType.NVarChar).Value = updateCustomer.Address;
-                    adapter.InsertCommand.ExecuteNonQuery();
-
-                    connection.Close();
-
-                    return Request.CreateResponse(HttpStatusCode.OK);
+                    customerService.UpdateById(Id, customerEntity);
+                    return Request.CreateResponse(HttpStatusCode.OK, "Customer is updated!");
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "There is no Customer with that id.");
+                    return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no customer with id: {Id}");
                 }
             }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Id is not valid and/or object is not provided.");
+            }
         }
+        #endregion
 
-        // DELETE api/values/2
+        #region Delete
+        // DELETE api/values/5
         [HttpDelete]
         [Route("customer/delete/{id}")]
         public HttpResponseMessage DeleteById(Guid Id)
         {
-
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            using (connection)
+            if (Id != Guid.Empty)
             {
-                connection.Open();
+                CustomerService customerService = new CustomerService();
+                CustomerEntity customerHelp = customerService.GetById(Id);
 
-                string sqlQuery = $"SELECT * FROM Customer WHERE Id = '{Id}';";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
+                if (customerHelp != null)
                 {
-                    connection.Close();
-                    connection.Open();
-
-                    SqlDataAdapter adapter = new SqlDataAdapter();
-                    sqlQuery = $"DELETE FROM Customer WHERE Id = '{Id}';";
-                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
-                    adapter.InsertCommand.ExecuteNonQuery();
-
-                    connection.Close();
-
-                    return Request.CreateResponse(HttpStatusCode.OK, "Customer is deleted.");
+                    customerService.DeleteById(Id);
+                    return Request.CreateResponse(HttpStatusCode.OK, "Customer is deleted!");
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "There is no Customer with that id.");
+                    return Request.CreateResponse(HttpStatusCode.NotFound, $"Customer with id: {Id} doesn't exist!");
                 }
             }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Didn't provide an Id!");
+            }
         }
+        #endregion
     }
 }

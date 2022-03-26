@@ -56,14 +56,16 @@ namespace TractorShopWebApi.Controllers
             {
                 TractorModelService tractorModelService = new TractorModelService();
                 TractorModelEntity tractorModelEntity = tractorModelService.GetById(Id);
-                TractorModelREST tractorModelRest = new TractorModelREST();
+                
 
-                tractorModelRest.Model = tractorModelEntity.Model;
-                tractorModelRest.CatalogueCode = tractorModelEntity.CatalogueCode;
-                tractorModelRest.BrandId = tractorModelEntity.BrandId;
-
-                if (tractorModelRest != null)
+                if (tractorModelEntity != null)
                 {
+                    TractorModelREST tractorModelRest = new TractorModelREST();
+
+                    tractorModelRest.Model = tractorModelEntity.Model;
+                    tractorModelRest.CatalogueCode = tractorModelEntity.CatalogueCode;
+                    tractorModelRest.BrandId = tractorModelEntity.BrandId;
+
                     return Request.CreateResponse(HttpStatusCode.OK, tractorModelRest);
                 }
                 else
@@ -107,7 +109,7 @@ namespace TractorShopWebApi.Controllers
                     tractorModelEntity.BrandId = postModel.BrandId;
 
                     tractorModelService.Post(tractorModelEntity);
-                    return Request.CreateResponse(HttpStatusCode.OK, "Object is created.");
+                    return Request.CreateResponse(HttpStatusCode.OK, "Tractor model is created.");
 
                     //TODO: provjeriti kako dohvatiti ubačeni podatak iz baze.
                     //U slučaju kada samo "tractorModelEntity ubacim kao parametar za vraćanje,
@@ -139,11 +141,11 @@ namespace TractorShopWebApi.Controllers
                     tractorModelEntity.BrandId = updateModel.BrandId;
 
                     tractorModelService.UpdateById(Id, tractorModelEntity);
-                    return Request.CreateResponse(HttpStatusCode.OK);
+                    return Request.CreateResponse(HttpStatusCode.OK, "Tractor model is updated!");
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no Tractor Model with id: {Id}");
+                    return Request.CreateResponse(HttpStatusCode.NotFound, $"There is no Tractor model with id: {Id}");
                 }
             }
             else
@@ -162,13 +164,21 @@ namespace TractorShopWebApi.Controllers
             if (Id > 0)
             {
                 TractorModelService tractorModelService = new TractorModelService();
+                TractorModelEntity tractorModelHelp = tractorModelService.GetById(Id);
 
-                tractorModelService.DeleteById(Id);
-                return Request.CreateResponse(HttpStatusCode.OK);
+                if (tractorModelHelp != null)
+                {
+                    tractorModelService.DeleteById(Id);
+                    return Request.CreateResponse(HttpStatusCode.OK, "Tractor model is deleted!");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, $"Tractor model with id: {Id} doesn't exist!");
+                }
             }
             else
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Provided an empty object!");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Didn't provide a valid Id!");
             }
         }
         #endregion

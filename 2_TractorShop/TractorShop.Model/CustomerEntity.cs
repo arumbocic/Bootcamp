@@ -1,13 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
+using TractorShop.Model.Common;
 
-namespace TractorShopWebApi.Models
+namespace TractorShop.Model
 {
-    public class CustomerREST
+    public class CustomerEntity : ICustomerEntity
     {
+        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Address { get; set; }
+
         //public List<TractorModel> OwnedTractors { get; set; }
     }
 
