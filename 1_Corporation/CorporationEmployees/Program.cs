@@ -12,7 +12,7 @@ namespace CorporationEmployees
         public static void Main(string[] args)
         {
 
-            List<Workers> workers = EnteringNewWorkers.CreateWorker();
+            List<Worker> workers = EnteringNewWorkers.CreateWorker();
 
             foreach (var worker in workers)
             {

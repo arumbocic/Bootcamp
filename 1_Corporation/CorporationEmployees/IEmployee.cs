@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace CorporationEmployees
 {
-    public class Department
+    public interface IEmployee
     {
-        public string Name { get; set; }
-        public string Id { get; set; }
+        string FirstName { get; set; }
+        string LastName { get; set; }
+
+        string GetAddress();
     }
 }

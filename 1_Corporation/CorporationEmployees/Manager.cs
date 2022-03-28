@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CorporationEmployees
 {
-    public class Manager : Employees
+    public class Manager : Employee
     {
         public int NumberOfEmployeesManaged { get; set; }
         public Guid ManagerId { get; set; }
