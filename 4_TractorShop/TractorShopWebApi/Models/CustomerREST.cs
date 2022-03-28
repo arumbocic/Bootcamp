@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace TractorShopWebApi.Models
 {
     public class CustomerREST
     {
+        [Required]
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Address { get; set; }
