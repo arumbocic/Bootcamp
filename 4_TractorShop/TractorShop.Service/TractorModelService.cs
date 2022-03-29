@@ -3,41 +3,42 @@ using TractorShop.Model;
 using TractorShop.Repository;
 using TractorShop.Service.Common;
 using System.Threading.Tasks;
+using TractorShop.Repository.Common;
 
 namespace TractorShop.Service
 {
     public class TractorModelService : ITractorModelService
     {
+        private readonly ITractorModelRepository TractorModelRepository;
+        public TractorModelService(ITractorModelRepository tractorModelRepository)
+        {
+            TractorModelRepository = tractorModelRepository;
+        }
         public async Task<List<TractorModelEntity>> GetAllAsync()
         {
-            TractorModelRepository tractorModelRepository = new TractorModelRepository();
-            List<TractorModelEntity> tractorModels = await tractorModelRepository.GetAllAsync();
+            List<TractorModelEntity> tractorModels = await TractorModelRepository.GetAllAsync();
             return tractorModels;
         }
 
         public async Task<TractorModelEntity> GetByIdAsync(int Id)
         {
-            TractorModelRepository tractorModelRepository = new TractorModelRepository();
-            TractorModelEntity tractorModelEntity = await tractorModelRepository.GetByIdAsync(Id);
+            TractorModelEntity tractorModelEntity = await TractorModelRepository.GetByIdAsync(Id);
             return tractorModelEntity;
         }
 
         public async Task PostAsync(TractorModelEntity postModel)
         {
-            TractorModelRepository tractorModelRepository = new TractorModelRepository();
-            await tractorModelRepository.PostAsync(postModel);
+            await TractorModelRepository.PostAsync(postModel);
         }
 
         public async Task UpdateByIdAsync(int Id, TractorModelEntity updateModel)
         {
-            TractorModelRepository tractorModelRepository = new TractorModelRepository();
-            await tractorModelRepository.UpdateByIdAsync(Id, updateModel);
+            await TractorModelRepository.UpdateByIdAsync(Id, updateModel);
         }
 
         public async Task DeleteByIdAsync(int Id)
         {
-            TractorModelRepository tractorModelRepository = new TractorModelRepository();
-            await tractorModelRepository.DeleteByIdAsync(Id);
+            await TractorModelRepository.DeleteByIdAsync(Id);
         }
     }
 }

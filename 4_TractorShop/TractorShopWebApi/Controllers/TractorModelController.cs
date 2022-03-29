@@ -6,12 +6,19 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using TractorShop.Model;
 using TractorShop.Service;
+using TractorShop.Service.Common;
 using TractorShopWebApi.Models;
 
 namespace TractorShopWebApi.Controllers
 {
     public class TractorModelController : ApiController
     {
+        private readonly ITractorModelService TractorModelService;
+        public TractorModelController(ITractorModelService tractorModelService)
+        {
+            TractorModelService = tractorModelService;
+        }
+
         #region GetAll 
 
         // GET api/values
@@ -19,8 +26,7 @@ namespace TractorShopWebApi.Controllers
         [Route("tractormodel/getall")]
         public async Task<HttpResponseMessage> GetAllAsync()
         {
-            TractorModelService tractorModelService = new TractorModelService();
-            List<TractorModelEntity> tractorModels = await tractorModelService.GetAllAsync();
+            List<TractorModelEntity> tractorModels = await TractorModelService.GetAllAsync();
             List<TractorModelREST> tractorModelsRest = new List<TractorModelREST>();
 
             foreach (var model in tractorModels)
@@ -55,9 +61,7 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id > 0)
             {
-                TractorModelService tractorModelService = new TractorModelService();
-                TractorModelEntity tractorModelEntity = await tractorModelService.GetByIdAsync(Id);
-                
+                TractorModelEntity tractorModelEntity = await TractorModelService.GetByIdAsync(Id);                
 
                 if (tractorModelEntity != null)
                 {
@@ -104,12 +108,11 @@ namespace TractorShopWebApi.Controllers
                 else
                 {
                     TractorModelEntity tractorModelEntity = new TractorModelEntity();
-                    TractorModelService tractorModelService = new TractorModelService();
 
                     tractorModelEntity.Model = postModel.Model;
                     tractorModelEntity.BrandId = postModel.BrandId;
 
-                    await tractorModelService.PostAsync(tractorModelEntity);
+                    await TractorModelService.PostAsync(tractorModelEntity);
                     return Request.CreateResponse(HttpStatusCode.OK, "Tractor model is created.");
 
                     //TODO: provjeriti kako dohvatiti ubačeni podatak iz baze.
@@ -131,8 +134,7 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id > 0 && updateModel != null)
             {
-                TractorModelService tractorModelService = new TractorModelService();
-                TractorModelEntity tractorModelHelp = await tractorModelService.GetByIdAsync(Id);
+                TractorModelEntity tractorModelHelp = await TractorModelService.GetByIdAsync(Id);
 
                 if (tractorModelHelp != null)
                 {
@@ -141,7 +143,7 @@ namespace TractorShopWebApi.Controllers
                     tractorModelEntity.Model = updateModel.Model;
                     tractorModelEntity.BrandId = updateModel.BrandId;
 
-                    await tractorModelService.UpdateByIdAsync(Id, tractorModelEntity);
+                    await TractorModelService.UpdateByIdAsync(Id, tractorModelEntity);
                     return Request.CreateResponse(HttpStatusCode.OK, "Tractor model is updated!");
                 }
                 else
@@ -164,12 +166,11 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id > 0)
             {
-                TractorModelService tractorModelService = new TractorModelService();
-                TractorModelEntity tractorModelHelp = await tractorModelService.GetByIdAsync(Id);
+                TractorModelEntity tractorModelHelp = await TractorModelService.GetByIdAsync(Id);
 
                 if (tractorModelHelp != null)
                 {
-                    await tractorModelService.DeleteByIdAsync(Id);
+                    await TractorModelService.DeleteByIdAsync(Id);
                     return Request.CreateResponse(HttpStatusCode.OK, "Tractor model is deleted!");
                 }
                 else

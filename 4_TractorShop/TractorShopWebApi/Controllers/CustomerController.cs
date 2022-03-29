@@ -7,12 +7,19 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using TractorShop.Model;
 using TractorShop.Service;
+using TractorShop.Service.Common;
 using TractorShopWebApi.Models;
 
 namespace TractorShopWebApi.Controllers
 {
     public class CustomerController : ApiController
     {
+        private readonly ICustomerService CustomerService;
+        public CustomerController(ICustomerService customerService)
+        {
+            CustomerService = customerService;
+        }
+
         #region GetAll 
 
         // GET api/values
@@ -20,8 +27,7 @@ namespace TractorShopWebApi.Controllers
         [Route("customer/getall")]
         public async Task<HttpResponseMessage> GetAllAsync()
         {
-            CustomerService customerService = new CustomerService();
-            List<CustomerEntity> customers = await customerService.GetAllAsync();
+            List<CustomerEntity> customers = await CustomerService.GetAllAsync();
             List<CustomerREST> customersRest = new List<CustomerREST>();
 
             foreach (var customer in customers)
@@ -56,8 +62,7 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id != Guid.Empty)
             {
-                CustomerService customerService = new CustomerService();
-                CustomerEntity customerEntity = await customerService.GetByIdAsync(Id);
+                CustomerEntity customerEntity = await CustomerService.GetByIdAsync(Id);
 
                 if (customerEntity != null)
                 {
@@ -100,13 +105,12 @@ namespace TractorShopWebApi.Controllers
                 else
                 {
                     CustomerEntity customerEntity = new CustomerEntity();
-                    CustomerService customerService = new CustomerService();
 
                     customerEntity.FirstName = postCustomer.FirstName;
                     customerEntity.LastName = postCustomer.LastName;
                     customerEntity.Address = postCustomer.Address;
 
-                    await customerService.PostAsync(customerEntity);
+                    await CustomerService.PostAsync(customerEntity);
                     return Request.CreateResponse(HttpStatusCode.OK, "Customer is created.");
 
                     //TODO: provjeriti kako dohvatiti ubačeni podatak iz baze.
@@ -128,8 +132,7 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id != Guid.Empty && updateCustomer != null)
             {
-                CustomerService customerService = new CustomerService();
-                CustomerEntity customerHelp = await customerService.GetByIdAsync(Id);
+                CustomerEntity customerHelp = await CustomerService.GetByIdAsync(Id);
 
                 if (customerHelp != null)
                 {
@@ -139,7 +142,7 @@ namespace TractorShopWebApi.Controllers
                     customerEntity.LastName = updateCustomer.LastName;
                     customerEntity.Address = updateCustomer.Address;
 
-                    await customerService.UpdateByIdAsync(Id, customerEntity);
+                    await CustomerService.UpdateByIdAsync(Id, customerEntity);
                     return Request.CreateResponse(HttpStatusCode.OK, "Customer is updated!");
                 }
                 else
@@ -162,12 +165,11 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id != Guid.Empty)
             {
-                CustomerService customerService = new CustomerService();
-                CustomerEntity customerHelp = await customerService.GetByIdAsync(Id);
+                CustomerEntity customerHelp = await CustomerService.GetByIdAsync(Id);
 
                 if (customerHelp != null)
                 {
-                    await customerService.DeleteByIdAsync(Id);
+                    await CustomerService.DeleteByIdAsync(Id);
                     return Request.CreateResponse(HttpStatusCode.OK, "Customer is deleted!");
                 }
                 else
