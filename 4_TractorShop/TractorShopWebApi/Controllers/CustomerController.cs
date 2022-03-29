@@ -125,19 +125,17 @@ namespace TractorShopWebApi.Controllers
         // PUT api/values/5
         //TODO: napraviti handleanje situacija kad ne pošaljem određenu vrijednost propertyja
         //(npr. nisam poslao vrijednost za "LastName")
-
+        //TODO: provjeri zasto ne radi updapte? + ni za TractorModel isto
         [HttpPut]
         [Route("customer/update/{id}")]
         public async Task<HttpResponseMessage> UpdateByIdAsync(Guid Id, CustomerREST updateCustomer)
         {
             if (Id != Guid.Empty && updateCustomer != null)
             {
-                CustomerEntity customerHelp = await CustomerService.GetByIdAsync(Id);
+                CustomerEntity customerEntity = await CustomerService.GetByIdAsync(Id);
 
-                if (customerHelp != null)
+                if (customerEntity != null)
                 {
-                    CustomerEntity customerEntity = new CustomerEntity();
-
                     customerEntity.FirstName = updateCustomer.FirstName;
                     customerEntity.LastName = updateCustomer.LastName;
                     customerEntity.Address = updateCustomer.Address;

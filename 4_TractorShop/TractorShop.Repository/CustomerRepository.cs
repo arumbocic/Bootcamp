@@ -130,18 +130,27 @@ namespace TractorShop.Repository
                         sqlQuery = $"UPDATE Customer SET FirstName = @FirstName WHERE Id = '{Id}';";
                         adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
                         adapter.InsertCommand.Parameters.Add("@FirstName", SqlDbType.NVarChar).Value = updateCustomer.FirstName;
+                        connection.Close();
+
                     }
                     if (!string.IsNullOrEmpty(updateCustomer.LastName))
                     {
+                        await connection.OpenAsync();
+
                         sqlQuery = $"UPDATE Customer SET LastName = @LastName WHERE Id = '{Id}';";
                         adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
                         adapter.InsertCommand.Parameters.Add("@LastName", SqlDbType.NVarChar).Value = updateCustomer.LastName;
+                        connection.Close();
+
                     }
                     if (!string.IsNullOrEmpty(updateCustomer.Address))
                     {
+                        await connection.OpenAsync();
+
                         sqlQuery = $"UPDATE Customer SET Address = @Address WHERE Id = '{Id}';";
                         adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
                         adapter.InsertCommand.Parameters.Add("@Address", SqlDbType.NVarChar).Value = updateCustomer.Address;
+
                     }
 
                     await adapter.InsertCommand.ExecuteNonQueryAsync();

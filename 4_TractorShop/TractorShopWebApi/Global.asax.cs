@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -8,6 +7,7 @@ using TractorShop.Repository;
 using TractorShop.Repository.Common;
 using TractorShop.Service;
 using TractorShop.Service.Common;
+using System.Web;
 
 namespace TractorShopWebApi
 {
@@ -20,19 +20,8 @@ namespace TractorShopWebApi
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            IocConfig.Configure();
         }
-
-        public IContainer Configure()
-        {
-            var builder = new ContainerBuilder();
-
-            builder.RegisterType<CustomerRepository>().As<ICustomerRepository>();
-            builder.RegisterType<CustomerService>().As<ICustomerService>();
-            builder.RegisterType<TractorModelRepository>().As<ITractorModelRepository>();
-            builder.RegisterType<TractorModelService>().As<ITractorModelService>();
-
-            return builder.Build();
-        }
-
     }
 }
