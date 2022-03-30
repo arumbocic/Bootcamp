@@ -288,6 +288,10 @@
     <Content Include="Scripts\jquery-3.6.0.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TractorModel.Common\TractorShop.Common.csproj">
+      <Project>{803961fd-f76f-45d9-b1a1-aff4e46f32fd}</Project>
+      <Name>TractorShop.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TractorShop.Model\TractorShop.Model.csproj">
       <Project>{4EF39434-1CE7-48FE-B9A2-0EBF7318DBF1}</Project>
       <Name>TractorShop.Model</Name>

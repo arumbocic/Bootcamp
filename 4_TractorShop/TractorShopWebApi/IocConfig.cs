@@ -19,6 +19,7 @@ namespace TractorShopWebApi
         {
             var builder = new ContainerBuilder();
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+
             builder.RegisterType<CustomerRepository>().As<ICustomerRepository>();
             builder.RegisterType<CustomerService>().As<ICustomerService>();
             builder.RegisterType<TractorModelRepository>().As<ITractorModelRepository>();

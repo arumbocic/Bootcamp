@@ -114,49 +114,17 @@ namespace TractorShop.Repository
             {
                 await connection.OpenAsync();
 
-                string sqlQuery = $"SELECT * FROM Customer WHERE Id = '{Id}';";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                SqlDataReader reader = await command.ExecuteReaderAsync();
+                SqlDataAdapter adapter = new SqlDataAdapter();
 
-                if (await reader.ReadAsync())
-                {
-                    connection.Close();
-                    await connection.OpenAsync();
+                string sqlQuery = $"UPDATE Customer SET FirstName = @FirstName, LastName = @LastName, Address = @Address WHERE Id = {Id};";
 
-                    SqlDataAdapter adapter = new SqlDataAdapter();                    
+                adapter.UpdateCommand = new SqlCommand(sqlQuery, connection);
+                adapter.UpdateCommand.Parameters.Add("@FirstName", SqlDbType.NVarChar).Value = updateCustomer.FirstName;
+                adapter.UpdateCommand.Parameters.Add("@LastName", SqlDbType.NVarChar).Value = updateCustomer.LastName;
+                adapter.UpdateCommand.Parameters.Add("@Address", SqlDbType.NVarChar).Value = updateCustomer.Address;
 
-                    if (!string.IsNullOrEmpty(updateCustomer.FirstName))
-                    {
-                        sqlQuery = $"UPDATE Customer SET FirstName = @FirstName WHERE Id = '{Id}';";
-                        adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
-                        adapter.InsertCommand.Parameters.Add("@FirstName", SqlDbType.NVarChar).Value = updateCustomer.FirstName;
-                        connection.Close();
-
-                    }
-                    if (!string.IsNullOrEmpty(updateCustomer.LastName))
-                    {
-                        await connection.OpenAsync();
-
-                        sqlQuery = $"UPDATE Customer SET LastName = @LastName WHERE Id = '{Id}';";
-                        adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
-                        adapter.InsertCommand.Parameters.Add("@LastName", SqlDbType.NVarChar).Value = updateCustomer.LastName;
-                        connection.Close();
-
-                    }
-                    if (!string.IsNullOrEmpty(updateCustomer.Address))
-                    {
-                        await connection.OpenAsync();
-
-                        sqlQuery = $"UPDATE Customer SET Address = @Address WHERE Id = '{Id}';";
-                        adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
-                        adapter.InsertCommand.Parameters.Add("@Address", SqlDbType.NVarChar).Value = updateCustomer.Address;
-
-                    }
-
-                    await adapter.InsertCommand.ExecuteNonQueryAsync();
-
-                    connection.Close();
-                }
+                await adapter.UpdateCommand.ExecuteNonQueryAsync();
+                connection.Close();
             }
         }
         #endregion
@@ -170,24 +138,17 @@ namespace TractorShop.Repository
             {
                 await connection.OpenAsync();
 
-                string sqlQuery = $"SELECT * FROM Customer WHERE Id = '{Id}';";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                SqlDataReader reader = await command.ExecuteReaderAsync();
+                SqlDataAdapter adapter = new SqlDataAdapter();
 
-                if (await reader.ReadAsync())
-                {
-                    connection.Close();
-                    await connection .OpenAsync();
+                string sqlQuery = $"DELETE FROM Customer WHERE Id = '{Id}';";
+                adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
 
-                    SqlDataAdapter adapter = new SqlDataAdapter();
-                    sqlQuery = $"DELETE FROM Customer WHERE Id = '{Id}';";
-                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
-                    await adapter.InsertCommand.ExecuteNonQueryAsync();
+                await adapter.InsertCommand.ExecuteNonQueryAsync();
 
-                    connection.Close();
-                }
+                connection.Close();
             }
         }
         #endregion
     }
 }
+

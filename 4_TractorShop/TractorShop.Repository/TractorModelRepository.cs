@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using TractorShop.Model;
 using TractorShop.Repository.Common;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace TractorShop.Repository
 {
@@ -27,7 +28,7 @@ namespace TractorShop.Repository
 
                 if (reader.HasRows)
                 {
-                    while (await reader .ReadAsync())
+                    while (await reader.ReadAsync())
                     {
                         TractorModelEntity tractorModel = new TractorModelEntity();
 
@@ -112,34 +113,52 @@ namespace TractorShop.Repository
             {
                 await connection.OpenAsync();
 
-                string sqlQuery = $"SELECT * FROM TractorModel WHERE Id = '{Id}';";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                SqlDataReader reader = await command.ExecuteReaderAsync();
+                SqlDataAdapter adapter = new SqlDataAdapter();
 
-                if (await reader.ReadAsync())
-                {
-                    connection.Close();
-                    await connection.OpenAsync();
+                string sqlQuery = $"UPDATE TractorModel SET BrandId = @BrandId, Model = @Model WHERE Id = {Id};";
 
-                    SqlDataAdapter adapter = new SqlDataAdapter();                    
+                adapter.UpdateCommand = new SqlCommand(sqlQuery, connection);
+                adapter.UpdateCommand.Parameters.Add("@Model", SqlDbType.NVarChar).Value = updateModel.Model;
+                adapter.UpdateCommand.Parameters.Add("@BrandId", SqlDbType.Int).Value = updateModel.BrandId;
 
-                    if (!string.IsNullOrEmpty(updateModel.Model))
-                    {
-                        sqlQuery = $"UPDATE TractorModel SET Model = @Model WHERE Id = '{Id}';";
-                        adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
-                        adapter.InsertCommand.Parameters.Add("@Model", SqlDbType.NVarChar).Value = updateModel.Model;
-                    }
-                    if (updateModel.BrandId > 0)
-                    {
-                        sqlQuery = $"UPDATE TractorModel SET BrandId = @BrandId WHERE Id = '{Id}';";
-                        adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
-                        adapter.InsertCommand.Parameters.Add("@BrandId", SqlDbType.Int).Value = updateModel.BrandId;
-                    }
-                    await adapter.InsertCommand.ExecuteNonQueryAsync();
-
-                    connection.Close();
-                }
+                await adapter.UpdateCommand.ExecuteNonQueryAsync();
+                connection.Close();
             }
+
+            //using (connection)
+            //{
+
+
+            //await connection.OpenAsync();
+
+            //string sqlQuery = $"SELECT * FROM TractorModel WHERE Id = '{Id}';";
+            //SqlCommand command = new SqlCommand(sqlQuery, connection);
+            //SqlDataReader reader = await command.ExecuteReaderAsync();
+
+            //if (reader.Read())
+            //{
+            //    connection.Close();
+            //    await connection.OpenAsync();
+
+            //    SqlDataAdapter adapter = new SqlDataAdapter();                    
+
+            //    if (!string.IsNullOrEmpty(updateModel.Model))
+            //    {
+            //        sqlQuery = $"UPDATE TractorModel SET Model = @Model WHERE Id = {Id};";
+            //        adapter.UpdateCommand = new SqlCommand(sqlQuery, connection);
+            //        adapter.UpdateCommand.Parameters.Add("@Model", SqlDbType.NVarChar).Value = updateModel.Model;
+            //    }
+            //    if (updateModel.BrandId > 0)
+            //    {
+            //        sqlQuery = $"UPDATE TractorModel SET BrandId = @BrandId WHERE Id = {Id};";
+            //        adapter.UpdateCommand = new SqlCommand(sqlQuery, connection);
+            //        adapter.UpdateCommand.Parameters.Add("@BrandId", SqlDbType.Int).Value = updateModel.BrandId;
+            //    }
+            //    await adapter.UpdateCommand.ExecuteNonQueryAsync();
+
+            //    connection.Close();
+            //}
+            //}
         }
         #endregion
 
@@ -152,22 +171,14 @@ namespace TractorShop.Repository
             {
                 await connection.OpenAsync();
 
-                string sqlQuery = $"SELECT * FROM TractorModel WHERE Id = '{Id}';";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                SqlDataReader reader = await command.ExecuteReaderAsync();
+                SqlDataAdapter adapter = new SqlDataAdapter();
 
-                if (await reader.ReadAsync())
-                {
-                    connection.Close();
-                    await connection.OpenAsync();
+                string sqlQuery = $"DELETE FROM TractorModel WHERE Id = '{Id}';";
+                adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
 
-                    SqlDataAdapter adapter = new SqlDataAdapter();
-                    sqlQuery = $"DELETE FROM TractorModel WHERE Id = '{Id}';";
-                    adapter.InsertCommand = new SqlCommand(sqlQuery, connection);
-                    await adapter.InsertCommand.ExecuteNonQueryAsync();
+                await adapter.InsertCommand.ExecuteNonQueryAsync();
 
-                    connection.Close();
-                }
+                connection.Close();
             }
         }
         #endregion
