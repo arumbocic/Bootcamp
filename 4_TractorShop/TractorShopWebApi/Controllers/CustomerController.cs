@@ -27,9 +27,9 @@ namespace TractorShopWebApi.Controllers
         // GET api/values
         [HttpGet]
         [Route("customer/getall")]
-        public async Task<HttpResponseMessage> GetAllAsync(string firstName, string lastName, string address, int pageNumber, int recordsPerPage, string sortBy, string sortOrder )
+        public async Task<HttpResponseMessage> GetAllAsync(string firstName, string lastName, string address, int? pageNumber, int? recordsPerPage, string sortBy, string sortOrder)
         {
-            ISorting sorting = new Sorting(sortBy, sortOrder);
+            ISorting sorting = new Sorting(sortBy ?? "FirstName", sortOrder);
             IPaging paging = new Paging(pageNumber, recordsPerPage);
             IFilterCustomer filtering = new FilterCustomer(firstName, lastName, address);
 

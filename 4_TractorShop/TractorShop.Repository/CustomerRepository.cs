@@ -29,7 +29,7 @@ namespace TractorShop.Repository
 
                 if (filtering != null)
                 {
-                    queryString.Append("WHERE 1=1");
+                    queryString.Append("WHERE 1=1 ");
 
                     if (!string.IsNullOrWhiteSpace(filtering.FirstName))
                     {
@@ -50,7 +50,7 @@ namespace TractorShop.Repository
                     queryString.Append($"ORDER BY {sorting.SortBy} {sorting.SortOrder} ");
                 }
 
-                if (paging != null && paging.PageNumber > 0 && paging.RecordsPerPage > 0)
+                if (paging != null && paging.PageNumber != null && paging.RecordsPerPage > 0)
                 {
                     queryString.Append($"OFFSET({paging.PageNumber} - 1) * {paging.RecordsPerPage} ROWS FETCH NEXT {paging.RecordsPerPage} ROWS ONLY ");
                 }

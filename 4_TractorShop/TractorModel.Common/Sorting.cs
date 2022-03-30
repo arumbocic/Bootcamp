@@ -11,10 +11,10 @@ namespace TractorModel.Common
         public string SortOrder { get; set; }
         public string SortBy { get; set; }
 
-        public Sorting(string sortBy, string sortOrder = "ASC")
+        public Sorting(string sortBy, string sortOrder )
         {
             SortBy = sortBy;
-            SortOrder = sortOrder;
+            SortOrder = sortOrder ?? "ASC";
         }
     }
 }

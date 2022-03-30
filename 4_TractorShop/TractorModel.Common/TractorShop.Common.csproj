@@ -42,7 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FilterCustomer.cs" />
+    <Compile Include="FilterTractorModel.cs" />
     <Compile Include="IFilterCustomer.cs" />
+    <Compile Include="IFilterTractorModel.cs" />
     <Compile Include="IPaging.cs" />
     <Compile Include="ISorting.cs" />
     <Compile Include="Paging.cs" />

@@ -6,6 +6,7 @@ using TractorShop.Repository.Common;
 using System.Threading.Tasks;
 using System.Text;
 using TractorShop.Model.Common;
+using TractorModel.Common;
 
 namespace TractorShop.Repository
 {
@@ -14,14 +15,47 @@ namespace TractorShop.Repository
         static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TractorShopDB;Integrated Security=True";
 
         #region GetAll
-        public async Task<List<ITractorModelEntity>> GetAllAsync()
+        public async Task<List<ITractorModelEntity>> GetAllAsync(ISorting sorting, IPaging paging, IFilterTractorModel filtering)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             List<ITractorModelEntity> tractorModels = new List<ITractorModelEntity>();
 
             using (connection)
             {
-                SqlCommand command = new SqlCommand("SELECT * FROM TractorModel;", connection);
+                StringBuilder queryString = new StringBuilder();
+
+                queryString.Append("SELECT * FROM TractorModel ");
+
+                if (filtering != null)
+                {
+                    queryString.Append("WHERE 1=1");
+
+                    if (filtering.Id > 0)
+                    {
+                        queryString.Append($"AND Id = {filtering.Id} ");
+                    }
+                    if (!string.IsNullOrWhiteSpace(filtering.Model))
+                    {
+                        queryString.Append($"AND Model = '{filtering.Model}' ");
+                    }
+                    if (filtering.BrandId > 0)
+                    {
+                        queryString.Append($"AND BrandId = {filtering.BrandId} ");
+                    }
+                }
+
+                if (sorting != null && !string.IsNullOrWhiteSpace(sorting.SortBy))
+                {
+                    queryString.Append($"ORDER BY {sorting.SortBy} {sorting.SortOrder} ");
+                }
+
+                if (paging != null && paging.PageNumber > 0 && paging.RecordsPerPage > 0)
+                {
+                    queryString.Append($"OFFSET({paging.PageNumber} - 1) * {paging.RecordsPerPage} ROWS FETCH NEXT {paging.RecordsPerPage} ROWS ONLY ");
+                }
+
+                SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+
 
                 await connection.OpenAsync();
 

@@ -8,13 +8,13 @@ namespace TractorModel.Common
 {
     public class Paging : IPaging
     {
-        public int PageNumber { get; set; }
-        public int RecordsPerPage { get; set; }
+        public int? PageNumber { get; set; }
+        public int? RecordsPerPage { get; set; }
 
-        public Paging(int pageNumber, int recordsPerPage)
+        public Paging(int? pageNumber, int? recordsPerPage)
         {
-            PageNumber = pageNumber;
-            RecordsPerPage = recordsPerPage;
+            PageNumber = pageNumber ?? 1;
+            RecordsPerPage = recordsPerPage ?? 3;
         }
     }
 }

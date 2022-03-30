@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using TractorModel.Common;
 using TractorShop.Model;
 using TractorShop.Model.Common;
 using TractorShop.Service;
@@ -25,18 +26,22 @@ namespace TractorShopWebApi.Controllers
         // GET api/values
         [HttpGet]
         [Route("tractormodel/getall")]
-        public async Task<HttpResponseMessage> GetAllAsync()
+        public async Task<HttpResponseMessage> GetAllAsync(int id, string model, int brandId, int pageNumber, int recordsPerPage, string sortBy, string sortOrder)
         {
-            List<ITractorModelEntity> tractorModels = await TractorModelService.GetAllAsync();
+            ISorting sorting = new Sorting(sortBy ?? "TractorModel", sortOrder);
+            IPaging paging = new Paging(pageNumber, recordsPerPage);
+            IFilterTractorModel filtering = new FilterTractorModel(id, model, brandId);
+
+            List<ITractorModelEntity> tractorModels = await TractorModelService.GetAllAsync(sorting, paging, filtering);
             List<ITractorModelRest> tractorModelsRest = new List<ITractorModelRest>();
 
-            foreach (var model in tractorModels)
+            foreach (var tractorModel in tractorModels)
             {
                 ITractorModelRest tractorModelRest = new TractorModelRest();
 
-                tractorModelRest.Model = model.Model;
-                tractorModelRest.CatalogueCode = model.CatalogueCode;
-                tractorModelRest.BrandId = model.BrandId;
+                tractorModelRest.Model = tractorModel.Model;
+                tractorModelRest.CatalogueCode = tractorModel.CatalogueCode;
+                tractorModelRest.BrandId = tractorModel.BrandId;
 
                 tractorModelsRest.Add(tractorModelRest);
             }
