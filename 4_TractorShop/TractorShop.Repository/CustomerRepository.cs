@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TractorModel.Common;
 using TractorShop.Model;
+using TractorShop.Model.Common;
 using TractorShop.Repository.Common;
 
 namespace TractorShop.Repository
@@ -15,10 +16,10 @@ namespace TractorShop.Repository
         static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TractorShopDB;Integrated Security=True";
 
         #region GetAll
-        public async Task<List<CustomerEntity>> GetAllAsync(Sorting sorting, Paging paging, FilterCustomer filtering)
+        public async Task<List<ICustomerEntity>> GetAllAsync(ISorting sorting, IPaging paging, IFilterCustomer filtering)
         {
             SqlConnection connection = new SqlConnection(connectionString);
-            List<CustomerEntity> customers = new List<CustomerEntity>();
+            List<ICustomerEntity> customers = new List<ICustomerEntity>();
 
             using (connection)
             {
@@ -64,7 +65,7 @@ namespace TractorShop.Repository
                 {
                     while (await reader.ReadAsync())
                     {
-                        CustomerEntity customer = new CustomerEntity();
+                        ICustomerEntity customer = new CustomerEntity();
 
                         customer.Id = reader.GetGuid(0);
                         customer.FirstName = reader.GetString(1);
@@ -83,10 +84,10 @@ namespace TractorShop.Repository
         #endregion
 
         #region GetById
-        public async Task<CustomerEntity> GetByIdAsync(Guid Id)
+        public async Task<ICustomerEntity> GetByIdAsync(Guid Id)
         {
             SqlConnection connection = new SqlConnection(connectionString);
-            CustomerEntity customer = new CustomerEntity();
+            ICustomerEntity customer = new CustomerEntity();
 
             using (connection)
             {
@@ -114,7 +115,7 @@ namespace TractorShop.Repository
         #endregion
 
         #region Create
-        public async Task PostAsync(CustomerEntity postCustomer)
+        public async Task PostAsync(ICustomerEntity postCustomer)
         {
             SqlConnection connection = new SqlConnection(connectionString);
 
@@ -140,7 +141,7 @@ namespace TractorShop.Repository
         #endregion
 
         #region Update
-        public async Task UpdateByIdAsync(Guid Id, CustomerEntity updateCustomer)
+        public async Task UpdateByIdAsync(Guid Id, ICustomerEntity updateCustomer)
         {
             SqlConnection connection = new SqlConnection(connectionString);
 

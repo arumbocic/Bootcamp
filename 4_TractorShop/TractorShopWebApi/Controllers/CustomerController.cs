@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using TractorModel.Common;
 using TractorShop.Model;
+using TractorShop.Model.Common;
 using TractorShop.Service;
 using TractorShop.Service.Common;
 using TractorShopWebApi.Models;
@@ -28,16 +29,16 @@ namespace TractorShopWebApi.Controllers
         [Route("customer/getall")]
         public async Task<HttpResponseMessage> GetAllAsync(string firstName, string lastName, string address, int pageNumber, int recordsPerPage, string sortBy, string sortOrder )
         {
-            Sorting sorting = new Sorting(sortBy, sortOrder);
-            Paging paging = new Paging(pageNumber, recordsPerPage);
-            FilterCustomer filtering = new FilterCustomer(firstName, lastName, address);
+            ISorting sorting = new Sorting(sortBy, sortOrder);
+            IPaging paging = new Paging(pageNumber, recordsPerPage);
+            IFilterCustomer filtering = new FilterCustomer(firstName, lastName, address);
 
-            List<CustomerEntity> customers = await CustomerService.GetAllAsync(sorting, paging, filtering);
-            List<CustomerREST> customersRest = new List<CustomerREST>();
+            List<ICustomerEntity> customers = await CustomerService.GetAllAsync(sorting, paging, filtering);
+            List<ICustomerRest> customersRest = new List<ICustomerRest>();
 
             foreach (var customer in customers)
             {
-                CustomerREST customerRest = new CustomerREST();
+                ICustomerRest customerRest = new CustomerRest();
 
                 customerRest.FirstName = customer.FirstName;
                 customerRest.LastName = customer.LastName;
@@ -67,11 +68,11 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id != Guid.Empty)
             {
-                CustomerEntity customerEntity = await CustomerService.GetByIdAsync(Id);
+                ICustomerEntity customerEntity = await CustomerService.GetByIdAsync(Id);
 
                 if (customerEntity != null)
                 {
-                    CustomerREST customerRest = new CustomerREST();
+                    ICustomerRest customerRest = new CustomerRest();
 
                     customerRest.FirstName = customerEntity.FirstName;
                     customerRest.LastName = customerEntity.LastName;
@@ -95,7 +96,7 @@ namespace TractorShopWebApi.Controllers
         // POST api/values
         [HttpPost]
         [Route("customer/set")]
-        public async Task<HttpResponseMessage> PostAsync(CustomerREST postCustomer)
+        public async Task<HttpResponseMessage> PostAsync(ICustomerRest postCustomer)
         {
             if (postCustomer == null)
             {
@@ -109,7 +110,7 @@ namespace TractorShopWebApi.Controllers
                 }
                 else
                 {
-                    CustomerEntity customerEntity = new CustomerEntity();
+                    ICustomerEntity customerEntity = new CustomerEntity();
 
                     customerEntity.FirstName = postCustomer.FirstName;
                     customerEntity.LastName = postCustomer.LastName;
@@ -132,11 +133,11 @@ namespace TractorShopWebApi.Controllers
         //(npr. nisam poslao vrijednost za "LastName")
         [HttpPut]
         [Route("customer/update/{id}")]
-        public async Task<HttpResponseMessage> UpdateByIdAsync(Guid Id, CustomerREST updateCustomer)
+        public async Task<HttpResponseMessage> UpdateByIdAsync(Guid Id, ICustomerRest updateCustomer)
         {
             if (Id != Guid.Empty && updateCustomer != null)
             {
-                CustomerEntity customerEntity = await CustomerService.GetByIdAsync(Id);
+                ICustomerEntity customerEntity = await CustomerService.GetByIdAsync(Id);
 
                 if (customerEntity != null)
                 {
@@ -176,7 +177,7 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id != Guid.Empty)
             {
-                CustomerEntity customerEntity = await CustomerService.GetByIdAsync(Id);
+                ICustomerEntity customerEntity = await CustomerService.GetByIdAsync(Id);
 
                 if (customerEntity != null)
                 {

@@ -50,6 +50,10 @@
       <Project>{803961FD-F76F-45D9-B1A1-AFF4E46F32FD}</Project>
       <Name>TractorShop.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TractorShop.Model.Common\TractorShop.Model.Common.csproj">
+      <Project>{8776A349-7018-42D3-923E-27D628771EF8}</Project>
+      <Name>TractorShop.Model.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TractorShop.Model\TractorShop.Model.csproj">
       <Project>{4EF39434-1CE7-48FE-B9A2-0EBF7318DBF1}</Project>
       <Name>TractorShop.Model</Name>

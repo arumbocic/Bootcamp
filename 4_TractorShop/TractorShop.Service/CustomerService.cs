@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TractorModel.Common;
 using TractorShop.Model;
+using TractorShop.Model.Common;
 using TractorShop.Repository;
 using TractorShop.Repository.Common;
 using TractorShop.Service.Common;
@@ -16,24 +17,24 @@ namespace TractorShop.Service
         {
             CustomerRepository = customerRepository;
         }
-        public async Task<List<CustomerEntity>> GetAllAsync(Sorting sorting, Paging paging, FilterCustomer filtering)
+        public async Task<List<ICustomerEntity>> GetAllAsync(ISorting sorting, IPaging paging, IFilterCustomer filtering)
         {
-            List<CustomerEntity> customers = await CustomerRepository.GetAllAsync(sorting, paging, filtering);
+            List<ICustomerEntity> customers = await CustomerRepository.GetAllAsync(sorting, paging, filtering);
             return customers;
         }
 
-        public async Task<CustomerEntity> GetByIdAsync(Guid Id)
+        public async Task<ICustomerEntity> GetByIdAsync(Guid Id)
         {
-            CustomerEntity customerEntity = await CustomerRepository.GetByIdAsync(Id);
+            ICustomerEntity customerEntity = await CustomerRepository.GetByIdAsync(Id);
             return customerEntity;
         }
 
-        public async Task PostAsync(CustomerEntity postCustomer)
+        public async Task PostAsync(ICustomerEntity postCustomer)
         {
             await CustomerRepository.PostAsync(postCustomer);
         }
 
-        public async Task UpdateByIdAsync(Guid Id, CustomerEntity updateCustomer)
+        public async Task UpdateByIdAsync(Guid Id, ICustomerEntity updateCustomer)
         {
             await CustomerRepository.UpdateByIdAsync(Id, updateCustomer);
         }

@@ -187,8 +187,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="IocConfig.cs" />
-    <Compile Include="Models\CustomerREST.cs" />
-    <Compile Include="Models\TractorModelREST.cs" />
+    <Compile Include="Models\CustomerRest.cs" />
+    <Compile Include="Models\ICustomerRest.cs" />
+    <Compile Include="Models\ITractorModelRest.cs" />
+    <Compile Include="Models\TractorModelRest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -291,6 +293,10 @@
     <ProjectReference Include="..\TractorModel.Common\TractorShop.Common.csproj">
       <Project>{803961fd-f76f-45d9-b1a1-aff4e46f32fd}</Project>
       <Name>TractorShop.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TractorShop.Model.Common\TractorShop.Model.Common.csproj">
+      <Project>{8776A349-7018-42D3-923E-27D628771EF8}</Project>
+      <Name>TractorShop.Model.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\TractorShop.Model\TractorShop.Model.csproj">
       <Project>{4EF39434-1CE7-48FE-B9A2-0EBF7318DBF1}</Project>
