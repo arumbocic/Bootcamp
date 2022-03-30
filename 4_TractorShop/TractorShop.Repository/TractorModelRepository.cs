@@ -5,6 +5,7 @@ using TractorShop.Model;
 using TractorShop.Repository.Common;
 using System.Threading.Tasks;
 using System.Text;
+using TractorShop.Model.Common;
 
 namespace TractorShop.Repository
 {
@@ -13,10 +14,10 @@ namespace TractorShop.Repository
         static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TractorShopDB;Integrated Security=True";
 
         #region GetAll
-        public async Task<List<TractorModelEntity>> GetAllAsync()
+        public async Task<List<ITractorModelEntity>> GetAllAsync()
         {
             SqlConnection connection = new SqlConnection(connectionString);
-            List<TractorModelEntity> tractorModels = new List<TractorModelEntity>();
+            List<ITractorModelEntity> tractorModels = new List<ITractorModelEntity>();
 
             using (connection)
             {
@@ -30,7 +31,7 @@ namespace TractorShop.Repository
                 {
                     while (await reader.ReadAsync())
                     {
-                        TractorModelEntity tractorModel = new TractorModelEntity();
+                        ITractorModelEntity tractorModel = new TractorModelEntity();
 
                         tractorModel.Id = reader.GetInt32(0);
                         tractorModel.Model = reader.GetString(1);
@@ -49,10 +50,10 @@ namespace TractorShop.Repository
         #endregion
 
         #region GetById
-        public async Task<TractorModelEntity> GetByIdAsync(int Id)
+        public async Task<ITractorModelEntity> GetByIdAsync(int Id)
         {
             SqlConnection connection = new SqlConnection(connectionString);
-            TractorModelEntity tractorModel = new TractorModelEntity();
+            ITractorModelEntity tractorModel = new TractorModelEntity();
 
             using (connection)
             {
@@ -80,7 +81,7 @@ namespace TractorShop.Repository
         #endregion
 
         #region Create
-        public async Task PostAsync(TractorModelEntity postModel)
+        public async Task PostAsync(ITractorModelEntity postModel)
         {
             SqlConnection connection = new SqlConnection(connectionString);
 
@@ -105,7 +106,7 @@ namespace TractorShop.Repository
         #endregion
 
         #region Update
-        public async Task UpdateByIdAsync(int Id, TractorModelEntity updateModel)
+        public async Task UpdateByIdAsync(int Id, ITractorModelEntity updateModel)
         {
             SqlConnection connection = new SqlConnection(connectionString);
 
@@ -124,41 +125,6 @@ namespace TractorShop.Repository
                 await adapter.UpdateCommand.ExecuteNonQueryAsync();
                 connection.Close();
             }
-
-            //using (connection)
-            //{
-
-
-            //await connection.OpenAsync();
-
-            //string sqlQuery = $"SELECT * FROM TractorModel WHERE Id = '{Id}';";
-            //SqlCommand command = new SqlCommand(sqlQuery, connection);
-            //SqlDataReader reader = await command.ExecuteReaderAsync();
-
-            //if (reader.Read())
-            //{
-            //    connection.Close();
-            //    await connection.OpenAsync();
-
-            //    SqlDataAdapter adapter = new SqlDataAdapter();                    
-
-            //    if (!string.IsNullOrEmpty(updateModel.Model))
-            //    {
-            //        sqlQuery = $"UPDATE TractorModel SET Model = @Model WHERE Id = {Id};";
-            //        adapter.UpdateCommand = new SqlCommand(sqlQuery, connection);
-            //        adapter.UpdateCommand.Parameters.Add("@Model", SqlDbType.NVarChar).Value = updateModel.Model;
-            //    }
-            //    if (updateModel.BrandId > 0)
-            //    {
-            //        sqlQuery = $"UPDATE TractorModel SET BrandId = @BrandId WHERE Id = {Id};";
-            //        adapter.UpdateCommand = new SqlCommand(sqlQuery, connection);
-            //        adapter.UpdateCommand.Parameters.Add("@BrandId", SqlDbType.Int).Value = updateModel.BrandId;
-            //    }
-            //    await adapter.UpdateCommand.ExecuteNonQueryAsync();
-
-            //    connection.Close();
-            //}
-            //}
         }
         #endregion
 

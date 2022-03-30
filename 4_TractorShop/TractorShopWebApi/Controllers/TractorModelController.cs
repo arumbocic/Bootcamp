@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using TractorShop.Model;
+using TractorShop.Model.Common;
 using TractorShop.Service;
 using TractorShop.Service.Common;
 using TractorShopWebApi.Models;
@@ -26,12 +27,12 @@ namespace TractorShopWebApi.Controllers
         [Route("tractormodel/getall")]
         public async Task<HttpResponseMessage> GetAllAsync()
         {
-            List<TractorModelEntity> tractorModels = await TractorModelService.GetAllAsync();
-            List<TractorModelRest> tractorModelsRest = new List<TractorModelRest>();
+            List<ITractorModelEntity> tractorModels = await TractorModelService.GetAllAsync();
+            List<ITractorModelRest> tractorModelsRest = new List<ITractorModelRest>();
 
             foreach (var model in tractorModels)
             {
-                TractorModelRest tractorModelRest = new TractorModelRest();
+                ITractorModelRest tractorModelRest = new TractorModelRest();
 
                 tractorModelRest.Model = model.Model;
                 tractorModelRest.CatalogueCode = model.CatalogueCode;
@@ -61,11 +62,11 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id > 0)
             {
-                TractorModelEntity tractorModelEntity = await TractorModelService.GetByIdAsync(Id);                
+                ITractorModelEntity tractorModelEntity = await TractorModelService.GetByIdAsync(Id);                
 
                 if (tractorModelEntity != null)
                 {
-                    TractorModelRest tractorModelRest = new TractorModelRest();
+                    ITractorModelRest tractorModelRest = new TractorModelRest();
 
                     tractorModelRest.Model = tractorModelEntity.Model;
                     tractorModelRest.CatalogueCode = tractorModelEntity.CatalogueCode;
@@ -89,7 +90,7 @@ namespace TractorShopWebApi.Controllers
         // POST api/values
         [HttpPost]
         [Route("tractormodel/set")]
-        public async Task<HttpResponseMessage> PostAsync(TractorModelRest postModel)
+        public async Task<HttpResponseMessage> PostAsync(ITractorModelRest postModel)
         {
             if (postModel == null)
             {
@@ -107,7 +108,7 @@ namespace TractorShopWebApi.Controllers
                 }
                 else
                 {
-                    TractorModelEntity tractorModelEntity = new TractorModelEntity();
+                    ITractorModelEntity tractorModelEntity = new TractorModelEntity();
 
                     tractorModelEntity.Model = postModel.Model;
                     tractorModelEntity.BrandId = postModel.BrandId;
@@ -130,11 +131,11 @@ namespace TractorShopWebApi.Controllers
 
         [HttpPut]
         [Route("tractormodel/update/{id}")]
-        public async Task<HttpResponseMessage> UpdateByIdAsync(int Id, TractorModelRest updateModel)
+        public async Task<HttpResponseMessage> UpdateByIdAsync(int Id, ITractorModelRest updateModel)
         {
             if (Id > 0 && updateModel != null)
             {
-                TractorModelEntity tractorModelEntity = await TractorModelService.GetByIdAsync(Id);
+                ITractorModelEntity tractorModelEntity = await TractorModelService.GetByIdAsync(Id);
 
                 if (tractorModelEntity != null)
                 {
@@ -170,7 +171,7 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id > 0)
             {
-                TractorModelEntity tractorModelEntity = await TractorModelService.GetByIdAsync(Id);
+                ITractorModelEntity tractorModelEntity = await TractorModelService.GetByIdAsync(Id);
 
                 if (tractorModelEntity.Id > 0)
                 {

@@ -4,6 +4,7 @@ using TractorShop.Repository;
 using TractorShop.Service.Common;
 using System.Threading.Tasks;
 using TractorShop.Repository.Common;
+using TractorShop.Model.Common;
 
 namespace TractorShop.Service
 {
@@ -14,24 +15,24 @@ namespace TractorShop.Service
         {
             TractorModelRepository = tractorModelRepository;
         }
-        public async Task<List<TractorModelEntity>> GetAllAsync()
+        public async Task<List<ITractorModelEntity>> GetAllAsync()
         {
-            List<TractorModelEntity> tractorModels = await TractorModelRepository.GetAllAsync();
+            List<ITractorModelEntity> tractorModels = await TractorModelRepository.GetAllAsync();
             return tractorModels;
         }
 
-        public async Task<TractorModelEntity> GetByIdAsync(int Id)
+        public async Task<ITractorModelEntity> GetByIdAsync(int Id)
         {
-            TractorModelEntity tractorModelEntity = await TractorModelRepository.GetByIdAsync(Id);
+            ITractorModelEntity tractorModelEntity = await TractorModelRepository.GetByIdAsync(Id);
             return tractorModelEntity;
         }
 
-        public async Task PostAsync(TractorModelEntity postModel)
+        public async Task PostAsync(ITractorModelEntity postModel)
         {
             await TractorModelRepository.PostAsync(postModel);
         }
 
-        public async Task UpdateByIdAsync(int Id, TractorModelEntity updateModel)
+        public async Task UpdateByIdAsync(int Id, ITractorModelEntity updateModel)
         {
             await TractorModelRepository.UpdateByIdAsync(Id, updateModel);
         }
