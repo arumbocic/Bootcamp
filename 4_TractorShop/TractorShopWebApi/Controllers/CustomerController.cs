@@ -163,9 +163,9 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id != Guid.Empty)
             {
-                CustomerEntity customerEntity = await CustomerService.GetByIdAsync(Id);
+                CustomerEntity customerHelp = await CustomerService.GetByIdAsync(Id);
 
-                if (customerEntity != null)
+                if (customerHelp != null)
                 {
                     await CustomerService.DeleteByIdAsync(Id);
                     return Request.CreateResponse(HttpStatusCode.OK, "Customer is deleted!");

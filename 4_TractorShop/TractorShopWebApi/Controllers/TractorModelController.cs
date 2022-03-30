@@ -134,10 +134,12 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id > 0 && updateModel != null)
             {
-                TractorModelEntity tractorModelEntity = await TractorModelService.GetByIdAsync(Id);
+                TractorModelEntity tractorModelHelp = await TractorModelService.GetByIdAsync(Id);
 
-                if (tractorModelEntity != null)
+                if (tractorModelHelp != null)
                 {
+                    TractorModelEntity tractorModelEntity = new TractorModelEntity();
+
                     tractorModelEntity.Model = updateModel.Model;
                     tractorModelEntity.BrandId = updateModel.BrandId;
 
@@ -164,9 +166,9 @@ namespace TractorShopWebApi.Controllers
         {
             if (Id > 0)
             {
-                TractorModelEntity tractorModelEntity = await TractorModelService.GetByIdAsync(Id);
+                TractorModelEntity tractorModelHelp = await TractorModelService.GetByIdAsync(Id);
 
-                if (tractorModelEntity != null)
+                if (tractorModelHelp != null)
                 {
                     await TractorModelService.DeleteByIdAsync(Id);
                     return Request.CreateResponse(HttpStatusCode.OK, "Tractor model is deleted!");
