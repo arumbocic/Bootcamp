@@ -6,9 +6,15 @@ using System.Threading.Tasks;
 
 namespace TractorModel.Common
 {
-    public class Sorting
+    public class Sorting : ISorting
     {
-        public string SortOrder { get; set; } = "ASC";
+        public string SortOrder { get; set; }
         public string SortBy { get; set; }
+
+        public Sorting(string sortBy, string sortOrder = "ASC")
+        {
+            SortBy = sortBy;
+            SortOrder = sortOrder;
+        }
     }
 }

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text;
 using System.Threading.Tasks;
+using TractorModel.Common;
 using TractorShop.Model;
 using TractorShop.Repository.Common;
 
@@ -13,14 +15,46 @@ namespace TractorShop.Repository
         static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TractorShopDB;Integrated Security=True";
 
         #region GetAll
-        public async Task<List<CustomerEntity>> GetAllAsync()
+        public async Task<List<CustomerEntity>> GetAllAsync(Sorting sorting, Paging paging, FilterCustomer filtering)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             List<CustomerEntity> customers = new List<CustomerEntity>();
 
             using (connection)
             {
-                SqlCommand command = new SqlCommand("SELECT * FROM Customer;", connection);
+                StringBuilder queryString = new StringBuilder();
+
+                queryString.Append("SELECT * FROM Customer ");
+
+                if (filtering != null)
+                {
+                    queryString.Append("WHERE 1=1");
+
+                    if (!string.IsNullOrWhiteSpace(filtering.FirstName))
+                    {
+                        queryString.Append($"AND FirstName = '{filtering.FirstName}' ");
+                    }
+                    if (!string.IsNullOrWhiteSpace(filtering.LastName))
+                    {
+                        queryString.Append($"AND LastName = '{filtering.LastName}' ");
+                    }
+                    if (!string.IsNullOrWhiteSpace(filtering.Address))
+                    {
+                        queryString.Append($"AND Address = '{filtering.Address}' ");
+                    }
+                }
+
+                if (sorting != null && !string.IsNullOrWhiteSpace(sorting.SortBy))
+                {
+                    queryString.Append($"ORDER BY {sorting.SortBy} {sorting.SortOrder} ");
+                }
+
+                if (paging != null && paging.PageNumber > 0 && paging.RecordsPerPage > 0)
+                {
+                    queryString.Append($"OFFSET({paging.PageNumber} - 1) * {paging.RecordsPerPage} ROWS FETCH NEXT {paging.RecordsPerPage} ROWS ONLY ");
+                }
+
+                SqlCommand command = new SqlCommand(queryString.ToString(), connection);
 
                 await connection.OpenAsync();
 

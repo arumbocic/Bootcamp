@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TractorModel.Common;
 using TractorShop.Model;
 using TractorShop.Repository;
 using TractorShop.Repository.Common;
@@ -15,9 +16,9 @@ namespace TractorShop.Service
         {
             CustomerRepository = customerRepository;
         }
-        public async Task<List<CustomerEntity>> GetAllAsync()
+        public async Task<List<CustomerEntity>> GetAllAsync(Sorting sorting, Paging paging, FilterCustomer filtering)
         {
-            List<CustomerEntity> customers = await CustomerRepository.GetAllAsync();
+            List<CustomerEntity> customers = await CustomerRepository.GetAllAsync(sorting, paging, filtering);
             return customers;
         }
 

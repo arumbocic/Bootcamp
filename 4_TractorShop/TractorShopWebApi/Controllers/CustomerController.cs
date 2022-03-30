@@ -26,22 +26,14 @@ namespace TractorShopWebApi.Controllers
         // GET api/values
         [HttpGet]
         [Route("customer/getall")]
-        public async Task<HttpResponseMessage> GetAllAsync(int pageNumber, int recordsPerPage, string sortBy, string sortOrder)
+        public async Task<HttpResponseMessage> GetAllAsync(string firstName, string lastName, string address, int pageNumber, int recordsPerPage, string sortBy, string sortOrder )
         {
-            List<CustomerEntity> customers = await CustomerService.GetAllAsync();
+            Sorting sorting = new Sorting(sortBy, sortOrder);
+            Paging paging = new Paging(pageNumber, recordsPerPage);
+            FilterCustomer filtering = new FilterCustomer(firstName, lastName, address);
+
+            List<CustomerEntity> customers = await CustomerService.GetAllAsync(sorting, paging, filtering);
             List<CustomerREST> customersRest = new List<CustomerREST>();
-
-            Sorting sorting = new Sorting()
-            {
-                SortBy = sortBy,
-                SortOrder = sortOrder
-            };
-
-            Pagination pagination = new Pagination()
-            {
-                PageNumber = pageNumber,
-                RecordsPerPage = recordsPerPage
-            };
 
             foreach (var customer in customers)
             {
@@ -138,7 +130,6 @@ namespace TractorShopWebApi.Controllers
         // PUT api/values/5
         //TODO: napraviti handleanje situacija kad ne pošaljem određenu vrijednost propertyja
         //(npr. nisam poslao vrijednost za "LastName")
-        //TODO: provjeri zasto ne radi updapte? + ni za TractorModel isto
         [HttpPut]
         [Route("customer/update/{id}")]
         public async Task<HttpResponseMessage> UpdateByIdAsync(Guid Id, CustomerREST updateCustomer)
@@ -153,11 +144,11 @@ namespace TractorShopWebApi.Controllers
                     {
                         customerEntity.FirstName = updateCustomer.FirstName;
                     }
-                    if (!string.IsNullOrEmpty(updateCustomer.FirstName))
+                    if (!string.IsNullOrEmpty(updateCustomer.LastName))
                     {
                         customerEntity.LastName = updateCustomer.LastName;
                     }
-                    if (!string.IsNullOrEmpty(updateCustomer.FirstName))
+                    if (!string.IsNullOrEmpty(updateCustomer.Address))
                     {
                         customerEntity.Address = updateCustomer.Address;
                     }

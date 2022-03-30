@@ -46,6 +46,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TractorModel.Common\TractorShop.Common.csproj">
+      <Project>{803961FD-F76F-45D9-B1A1-AFF4E46F32FD}</Project>
+      <Name>TractorShop.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TractorShop.Model\TractorShop.Model.csproj">
       <Project>{4EF39434-1CE7-48FE-B9A2-0EBF7318DBF1}</Project>
       <Name>TractorShop.Model</Name>

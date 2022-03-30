@@ -41,7 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Pagination.cs" />
+    <Compile Include="FilterCustomer.cs" />
+    <Compile Include="IFilterCustomer.cs" />
+    <Compile Include="IPaging.cs" />
+    <Compile Include="ISorting.cs" />
+    <Compile Include="Paging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sorting.cs" />
   </ItemGroup>
