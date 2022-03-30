@@ -2,7 +2,7 @@
 
 namespace TractorShopWebApi.Models
 {
-    public class TractorModelREST
+    public class TractorModelRest : ITractorModelRest
     {
         public string Model { get; set; }
         public Guid CatalogueCode { get; set; }

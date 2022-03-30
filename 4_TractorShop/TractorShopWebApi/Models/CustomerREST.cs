@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TractorShopWebApi.Models
 {
-    public class CustomerREST
+    public class CustomerRest : ICustomerRest
     {
         [Required]
         public string FirstName { get; set; }
