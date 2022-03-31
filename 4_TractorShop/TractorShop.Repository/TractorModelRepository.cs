@@ -36,11 +36,11 @@ namespace TractorShop.Repository
                     }
                     if (!string.IsNullOrWhiteSpace(filtering.Model))
                     {
-                        queryString.Append($"AND Model = '{filtering.Model}' ");
+                        queryString.Append($"AND Model LIKE '%{filtering.Model}%' ");
                     }
                     if (filtering.BrandId > 0)
                     {
-                        queryString.Append($"AND BrandId = {filtering.BrandId} ");
+                        queryString.Append($"AND BrandId {filtering.BrandId} ");
                     }
                 }
 

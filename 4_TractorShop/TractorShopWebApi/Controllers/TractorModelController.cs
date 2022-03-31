@@ -28,7 +28,7 @@ namespace TractorShopWebApi.Controllers
         [Route("tractormodel/getall")]
         public async Task<HttpResponseMessage> GetAllAsync(int id, string model, int brandId, int pageNumber, int recordsPerPage, string sortBy, string sortOrder)
         {
-            ISorting sorting = new Sorting(sortBy ?? "TractorModel", sortOrder);
+            ISorting sorting = new Sorting(sortBy ?? "Model", sortOrder);
             IPaging paging = new Paging(pageNumber, recordsPerPage);
             IFilterTractorModel filtering = new FilterTractorModel(id, model, brandId);
 

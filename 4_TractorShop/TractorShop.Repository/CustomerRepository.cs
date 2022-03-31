@@ -33,15 +33,15 @@ namespace TractorShop.Repository
 
                     if (!string.IsNullOrWhiteSpace(filtering.FirstName))
                     {
-                        queryString.Append($"AND FirstName = '{filtering.FirstName}' ");
+                        queryString.Append($"AND FirstName LIKE '%{filtering.FirstName}%' ");
                     }
                     if (!string.IsNullOrWhiteSpace(filtering.LastName))
                     {
-                        queryString.Append($"AND LastName = '{filtering.LastName}' ");
+                        queryString.Append($"AND LastName LIKE '%{filtering.LastName}%' ");
                     }
                     if (!string.IsNullOrWhiteSpace(filtering.Address))
                     {
-                        queryString.Append($"AND Address = '{filtering.Address}' ");
+                        queryString.Append($"AND Address LIKE '%{filtering.Address}%' ");
                     }
                 }
 
