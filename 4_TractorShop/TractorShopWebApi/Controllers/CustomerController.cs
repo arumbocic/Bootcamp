@@ -34,11 +34,11 @@ namespace TractorShopWebApi.Controllers
             IFilterCustomer filtering = new FilterCustomer(firstName, lastName, address);
 
             List<ICustomerEntity> customers = await CustomerService.GetAllAsync(sorting, paging, filtering);
-            List<ICustomerRest> customersRest = new List<ICustomerRest>();
+            List<CustomerRest> customersRest = new List<CustomerRest>();
 
             foreach (var customer in customers)
             {
-                ICustomerRest customerRest = new CustomerRest();
+                CustomerRest customerRest = new CustomerRest();
 
                 customerRest.FirstName = customer.FirstName;
                 customerRest.LastName = customer.LastName;
@@ -72,7 +72,7 @@ namespace TractorShopWebApi.Controllers
 
                 if (customerEntity != null)
                 {
-                    ICustomerRest customerRest = new CustomerRest();
+                    CustomerRest customerRest = new CustomerRest();
 
                     customerRest.FirstName = customerEntity.FirstName;
                     customerRest.LastName = customerEntity.LastName;
@@ -96,7 +96,7 @@ namespace TractorShopWebApi.Controllers
         // POST api/values
         [HttpPost]
         [Route("customer/set")]
-        public async Task<HttpResponseMessage> PostAsync(ICustomerRest postCustomer)
+        public async Task<HttpResponseMessage> PostAsync(CustomerRest postCustomer)
         {
             if (postCustomer == null)
             {
@@ -133,7 +133,7 @@ namespace TractorShopWebApi.Controllers
         //(npr. nisam poslao vrijednost za "LastName")
         [HttpPut]
         [Route("customer/update/{id}")]
-        public async Task<HttpResponseMessage> UpdateByIdAsync(Guid Id, ICustomerRest updateCustomer)
+        public async Task<HttpResponseMessage> UpdateByIdAsync(Guid Id, CustomerRest updateCustomer)
         {
             if (Id != Guid.Empty && updateCustomer != null)
             {

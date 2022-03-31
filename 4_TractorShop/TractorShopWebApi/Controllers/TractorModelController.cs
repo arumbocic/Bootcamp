@@ -33,11 +33,11 @@ namespace TractorShopWebApi.Controllers
             IFilterTractorModel filtering = new FilterTractorModel(id, model, brandId);
 
             List<ITractorModelEntity> tractorModels = await TractorModelService.GetAllAsync(sorting, paging, filtering);
-            List<ITractorModelRest> tractorModelsRest = new List<ITractorModelRest>();
+            List<TractorModelRest> tractorModelsRest = new List<TractorModelRest>();
 
             foreach (var tractorModel in tractorModels)
             {
-                ITractorModelRest tractorModelRest = new TractorModelRest();
+                TractorModelRest tractorModelRest = new TractorModelRest();
 
                 tractorModelRest.Model = tractorModel.Model;
                 tractorModelRest.CatalogueCode = tractorModel.CatalogueCode;
@@ -71,7 +71,7 @@ namespace TractorShopWebApi.Controllers
 
                 if (tractorModelEntity != null)
                 {
-                    ITractorModelRest tractorModelRest = new TractorModelRest();
+                    TractorModelRest tractorModelRest = new TractorModelRest();
 
                     tractorModelRest.Model = tractorModelEntity.Model;
                     tractorModelRest.CatalogueCode = tractorModelEntity.CatalogueCode;
@@ -95,7 +95,7 @@ namespace TractorShopWebApi.Controllers
         // POST api/values
         [HttpPost]
         [Route("tractormodel/set")]
-        public async Task<HttpResponseMessage> PostAsync(ITractorModelRest postModel)
+        public async Task<HttpResponseMessage> PostAsync(TractorModelRest postModel)
         {
             if (postModel == null)
             {
@@ -113,7 +113,7 @@ namespace TractorShopWebApi.Controllers
                 }
                 else
                 {
-                    ITractorModelEntity tractorModelEntity = new TractorModelEntity();
+                    TractorModelEntity tractorModelEntity = new TractorModelEntity();
 
                     tractorModelEntity.Model = postModel.Model;
                     tractorModelEntity.BrandId = postModel.BrandId;
@@ -136,7 +136,7 @@ namespace TractorShopWebApi.Controllers
 
         [HttpPut]
         [Route("tractormodel/update/{id}")]
-        public async Task<HttpResponseMessage> UpdateByIdAsync(int Id, ITractorModelRest updateModel)
+        public async Task<HttpResponseMessage> UpdateByIdAsync(int Id, TractorModelRest updateModel)
         {
             if (Id > 0 && updateModel != null)
             {
