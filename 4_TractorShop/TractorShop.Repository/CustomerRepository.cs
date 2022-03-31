@@ -45,12 +45,12 @@ namespace TractorShop.Repository
                     }
                 }
 
-                if (sorting != null && !string.IsNullOrWhiteSpace(sorting.SortBy))
+                if (sorting != null)
                 {
-                    queryString.Append($"ORDER BY {sorting.SortBy} {sorting.SortOrder} ");
+                    queryString.Append($"ORDER BY '{sorting.SortBy}' {sorting.SortOrder} ");
                 }
 
-                if (paging != null && paging.PageNumber != null && paging.RecordsPerPage > 0)
+                if (paging != null)
                 {
                     queryString.Append($"OFFSET({paging.PageNumber} - 1) * {paging.RecordsPerPage} ROWS FETCH NEXT {paging.RecordsPerPage} ROWS ONLY ");
                 }
