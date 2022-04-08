@@ -117,7 +117,22 @@ DECLARE @PageNumber AS INT
 DECLARE @RowsOfPage AS INT
 SET @PageNumber=2
 SET @RowsOfPage=3
-SELECT m.Id, m.Model, b.Brand FROM TractorModel as m, TractorBrand as b
-ORDER BY  m.Id
+SELECT * FROM Customer
+ORDER BY Id
 OFFSET (@PageNumber-1)*@RowsOfPage ROWS
 FETCH NEXT @RowsOfPage ROWS ONLY;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
