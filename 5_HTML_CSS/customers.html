@@ -12,6 +12,9 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
+    
+    <!-- JSON -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
@@ -43,47 +46,35 @@
         </div>
     </nav>
 
-    <section>
-        <div class="row align-items-center content">
-            <div class="col-md-12">
-                <div class="row justify-content-center">
-                    <label for="changeColor">Change background color by writting text into input box</label>
-                </div>
-                <div class="row justify-content-center">
-                    <input class="color-input" name = "changeColor" placeholder="Change color here!" />
-                </div>
+    <section class="mt-5 pt-5">
+        <div class="container">
+            <div class="d-flex bd-highlight mb-3">
+              <div class="me-auto p-2 bd-highlight"><h2>Customers</div>
+              <div class="p-2 bd-highlight align-content-right">
+                <button type="button" class="btn btn-secondary" onclick="showUserCreateBox()">Create</button>
+              </div>
             </div>
-        </div>
-    </section>
-
-    <section class="container-fluid px-0">
-        <div class="row align-items-center justify-content-center content">
-            <div class="col-6 col-sm-8 col-sm-offset-2">
-                <div>
-                    <h2>CONTACT US</h2>
-                </div>
-                <form method="post" data-form-title="CONTACT US">
-                    <input type="hidden" data-form-email="true">
-                    <div class="row align-items-center pt-4">
-                        <div class="form-group col-4">
-                            <input type="text" class="form-control" name="name" required="" placeholder="Name*" data-form-field="Name">
-                        </div>
-                        <div class="form-group col-4">
-                            <input type="email" class="form-control" name="email" required="" placeholder="Email*" data-form-field="Email">
-                        </div>
-                        <div class="form-group col-4">
-                            <input type="tel" class="form-control" name="phone" placeholder="Phone" data-form-field="Phone">
-                        </div>
-                    </div>
-                    <div class="form-group col-12 px-0">
-                        <textarea class="form-control" name="message" placeholder="Message" rows="7" data-form-field="Message"></textarea>
-                    </div>
-                    <div>
-                        <button type="submit" class="btn btn-lg btn-danger">CONTACT US</button>
-                    </div>
-                </form>
+            
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Id</th> 
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Action</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody id="mytable">
+                  <!-- <tr>
+                    <th scope="row" colspan="5">Loading...</th>
+                  </tr> -->
+                </tbody>
+              </table>
             </div>
-        </div>
+          </div>
     </section>
 
     <footer>
@@ -98,13 +89,16 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="../6_JS/customers.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
-    <script src="../6_JS/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" 
+    crossorigin="anonymous"></script>
 
     <script>
         $(function () {

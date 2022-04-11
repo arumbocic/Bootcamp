@@ -124,6 +124,10 @@ label {
     animation: fadeIn 1s ease-in forwards;
 }
 
+td {
+      line-height: 3rem;
+}
+
 @keyframes fadeIn {
     to {
         opacity: 1;
