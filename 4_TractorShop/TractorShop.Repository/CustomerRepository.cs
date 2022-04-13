@@ -13,7 +13,7 @@ namespace TractorShop.Repository
 {
     public class CustomerRepository : ICustomerRepository
     {
-        static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TractorShopDB;Integrated Security=True";
+        static readonly string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TractorShopDB;Integrated Security=True";
 
         #region GetAll
         public async Task<List<ICustomerEntity>> GetAllAsync(ISorting sorting, IPaging paging, IFilterCustomer filtering)
